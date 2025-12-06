@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 import { Link, useNavigate } from 'react-router';
 import toast from 'react-hot-toast';
+import axios from 'axios';
 import { 
   MdOutlineEmail, 
   MdLockOutline, 
@@ -12,9 +13,11 @@ import {
   MdLink 
 } from 'react-icons/md';
 import { FcGoogle } from 'react-icons/fc';
+import { AuthContext } from '../../Provider/AuthContext';
 
 const Register = () => {
   const navigate = useNavigate();
+  const { createUser, updateUserProfile, signInWithGoogle } = useContext(AuthContext);
   const [photoType, setPhotoType] = useState('url');
 
   const { 
@@ -25,38 +28,50 @@ const Register = () => {
   } = useForm();
 
   const password = watch("password");
+  const image_hosting_key = import.meta.env.VITE_IMAGE_HOSTING_KEY;
+  const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
   const onSubmit = async (data) => {
     const { name, email, role, password, photoURL, imageFile } = data;
-
-    let finalPhoto = '';
-
-    if (photoType === 'url') {
-      finalPhoto = photoURL;
-    } else {
-      finalPhoto = imageFile[0]?.name;
-    }
+    const toastId = toast.loading('Creating account...');
 
     try {
-      const userData = {
-        name,
-        email,
-        role,
-        photo: finalPhoto,
-      };
+      let finalPhoto = photoURL;
 
-      console.log('Register Data:', userData);
-      toast.success('Registration Successful!');
+      if (photoType === 'file' && imageFile?.[0]) {
+        const formData = new FormData();
+        formData.append('image', imageFile[0]);
+        const res = await axios.post(image_hosting_api, formData);
+        if (res.data.success) {
+          finalPhoto = res.data.data.display_url;
+        }
+      }
+
+      await createUser(email, password);
+      
+      await updateUserProfile({
+        displayName: name,
+        photoURL: finalPhoto
+      });
+
+      toast.success('Registration Successful!', { id: toastId });
       navigate('/');
+      
     } catch (error) {
       console.error(error);
-      toast.error('Registration failed.');
+      toast.error(error.message || 'Registration failed.', { id: toastId });
     }
   };
 
-  const handleGoogleRegister = () => {
-    toast.success('Google Registration Successful!');
-    navigate('/');
+  const handleGoogleRegister = async () => {
+    try {
+      await signInWithGoogle();
+      toast.success('Google Registration Successful!');
+      navigate('/');
+    } catch (error) {
+      console.error(error);
+      toast.error(error.message);
+    }
   };
 
   return (
@@ -91,7 +106,6 @@ const Register = () => {
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
             
-            {/* Full Name */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Full Name</label>
               <div className="relative">
@@ -108,7 +122,6 @@ const Register = () => {
               {errors.name && <span className="text-red-500 text-xs">{errors.name.message}</span>}
             </div>
 
-            {/* Email */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
               <div className="relative">
@@ -125,7 +138,6 @@ const Register = () => {
               {errors.email && <span className="text-red-500 text-xs">{errors.email.message}</span>}
             </div>
 
-            {/* Photo Tabs */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">Profile Photo</label>
               
@@ -193,7 +205,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Role */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Register As</label>
               <div className="relative">
@@ -211,7 +222,6 @@ const Register = () => {
               {errors.role && <span className="text-red-500 text-xs">{errors.role.message}</span>}
             </div>
 
-            {/* Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
               <div className="relative">
@@ -237,7 +247,6 @@ const Register = () => {
               )}
             </div>
 
-            {/* Confirm Password */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-1">Confirm Password</label>
               <div className="relative">
