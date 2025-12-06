@@ -20,13 +20,10 @@ const Login = () => {
     const { email, password } = data;
     const toastId = toast.loading('Logging in...');
     try {
-      // Firebase login function
       await signInUser(email, password);
-
       toast.success('Login Successful!', { id: toastId });
       navigate('/');
     } catch (error) {
-      console.error(error);
       toast.error(error.message || 'Login failed', { id: toastId });
     }
   };
@@ -38,103 +35,104 @@ const Login = () => {
       toast.success('Google Login Successful!', { id: toastId });
       navigate('/');
     } catch (error) {
-      console.error(error);
       toast.error(error.message || 'Google login failed', { id: toastId });
     }
   };
 
   return (
-    <div className="flex min-h-screen w-full bg-gray-50 font-sans">
-      
-      <div className="hidden lg:flex lg:w-1/2 relative overflow-hidden">
-        <img 
-          src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop" 
-          alt="Finance Background" 
-          className="absolute inset-0 h-full w-full object-cover"
-        />
-        <div className="absolute inset-0 bg-gradient-to-r from-blue-900/80 to-purple-900/60 flex flex-col justify-center px-12 text-white">
-          <h2 className="text-4xl font-bold mb-4">Welcome to LoanLink</h2>
-          <p className="text-lg text-gray-200">
-            Apply for microloans easily and track your approval process in real-time.
-            Secure, Fast, and Reliable.
-          </p>
-        </div>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 px-4 py-12">
+      <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-0 rounded-3xl shadow-2xl overflow-hidden bg-base-100">
 
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-6 sm:p-12">
-        <div className="w-full max-w-md space-y-8 bg-white p-8 rounded-2xl shadow-xl border border-gray-100">
-          
-          <div className="text-center">
-            <h2 className="text-3xl font-extrabold text-gray-900">Sign In</h2>
-            <p className="mt-2 text-sm text-gray-600">
-              Access your dashboard panel
-            </p>
-          </div>
-
-          <button
-            onClick={handleGoogleLogin}
-            className="w-full flex items-center justify-center gap-3 bg-white border border-gray-300 rounded-lg py-3 px-4 text-gray-700 font-medium hover:bg-gray-50 hover:shadow-md transition-all duration-200 cursor-pointer"
-          >
-            <FcGoogle className="text-2xl" />
-            Continue with Google
-          </button>
-
-          <div className="relative">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-2 bg-white text-gray-500">Or continue with email</span>
-            </div>
-          </div>
-
-          <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
-            
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Email Address</label>
-              <div className="relative">
-                <MdOutlineEmail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-                <input
-                  type="email"
-                  placeholder="name@example.com"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${errors.email ? 'border-red-500' : 'border-gray-300'}`}
-                  {...register("email", { required: "Email is required" })}
-                />
-              </div>
-              {errors.email && <span className="text-red-500 text-xs mt-1">{errors.email.message}</span>}
-            </div>
-
-            <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-              <div className="relative">
-                <MdLockOutline className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400 text-xl" />
-                <input
-                  type="password"
-                  placeholder="••••••••"
-                  className={`w-full pl-10 pr-4 py-3 border rounded-lg focus:ring-2 focus:ring-blue-500 outline-none transition-all ${errors.password ? 'border-red-500' : 'border-gray-300'}`}
-                  {...register("password", { 
-                    required: "Password is required",
-                    minLength: { value: 6, message: "Password must be at least 6 characters" }
-                  })}
-                />
-              </div>
-              {errors.password && <span className="text-red-500 text-xs mt-1">{errors.password.message}</span>}
+        <div className="relative flex items-center justify-center p-8 lg:p-16 order-2 lg:order-1">
+          <div className="w-full max-w-md space-y-8">
+            <div className="text-center">
+              <h2 className="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
+                Welcome Back
+              </h2>
+              <p className="mt-3 text-base-content/70 text-lg">
+                Sign in to continue your financial journey
+              </p>
             </div>
 
             <button
-              type="submit"
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-all cursor-pointer"
+              onClick={handleGoogleLogin}
+              className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-base-200/60 backdrop-blur-md border border-base-300 hover:bg-base-300 transition-all duration-300 hover:scale-[1.02] shadow-lg"
             >
-              Sign In
+              <FcGoogle className="text-2xl" />
+              <span className="font-semibold">Continue with Google</span>
             </button>
-          </form>
 
-          <p className="text-center text-sm text-gray-600">
-            Don't have an account?{' '}
-            <Link to="/register" className="font-medium text-blue-600 hover:text-blue-500 hover:underline">
-              Register here
-            </Link>
-          </p>
+            <div className="relative my-8">
+              <div className="absolute inset-0 flex items-center">
+                <div className="w-full border-t border-base-300"></div>
+              </div>
+              <div className="relative flex justify-center">
+                <span className="px-6 bg-base-100 text-base-content/60 font-medium">Or use email</span>
+              </div>
+            </div>
+
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+
+              <div className="relative">
+                <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                <input
+                  type="email"
+                  placeholder="Email Address"
+                  className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
+                    errors.email ? 'input-error' : ''
+                  }`}
+                  {...register("email", { required: "Email is required" })}
+                />
+              </div>
+
+              <div className="relative">
+                <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                <input
+                  type="password"
+                  placeholder="Password"
+                  className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
+                    errors.password ? 'input-error' : ''
+                  }`}
+                  {...register("password", { 
+                    required: "Password is required",
+                    minLength: { value: 6, message: "Min 6 characters" }
+                  })}
+                />
+              </div>
+
+              <button
+                type="submit"
+                className="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 shadow-xl"
+              >
+                Sign In
+              </button>
+            </form>
+
+            <p className="text-center text-base-content/70">
+              Don't have an account?{' '}
+              <Link to="/register" className="font-bold text-primary hover:underline">
+                Register here
+              </Link>
+            </p>
+          </div>
+        </div>
+
+        <div className="hidden lg:block relative overflow-hidden bg-gradient-to-br from-primary to-secondary order-1 lg:order-2">
+          <div className="absolute inset-0 bg-black/20"></div>
+          <img 
+            src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop"
+            alt="Secure login"
+            className="w-full h-full object-cover mix-blend-overlay"
+          />
+          <div className="absolute bottom-0 left-0 right-0 p-16 text-white">
+            <h1 className="text-5xl font-black mb-6 leading-tight">
+              Secure Access<br />to Your Account
+            </h1>
+            <p className="text-xl opacity-90 max-w-lg">
+              Your financial data is protected with bank-level security. 
+              Log in with confidence.
+            </p>
+          </div>
         </div>
       </div>
     </div>

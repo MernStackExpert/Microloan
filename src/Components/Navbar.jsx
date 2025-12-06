@@ -1,6 +1,6 @@
-import { useState, useContext, useEffect } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { Link, NavLink } from "react-router";
-import { FiMenu, FiX, FiSun, FiMoon, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiX, FiSun, FiMoon, FiLogOut, FiZap } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthContext";
 
@@ -26,151 +26,106 @@ const Navbar = () => {
     }
   };
 
-  const navLinkStyles = ({ isActive }) =>
-    `px-4 py-2 rounded-full text-sm font-medium transition-all duration-300 ${
-      isActive
-        ? "bg-primary text-primary-content shadow-md"
-        : "text-base-content hover:bg-base-200"
+  const navLinkClasses = ({ isActive }) =>
+    `relative px-5 py-2.5 text-sm font-medium transition-all duration-300 group ${
+      isActive ? "text-primary" : "text-base-content/70 hover:text-primary"
     }`;
 
-  // menuItems variable
   const menuItems = (
     <>
-      <li>
-        <NavLink to="/" className={navLinkStyles} onClick={() => setOpen(false)}>
-          Home
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/all-loans" className={navLinkStyles} onClick={() => setOpen(false)}>
-          All Loans
-        </NavLink>
-      </li>
-      {user && (
-        <li>
-          <NavLink to="/dashboard" className={navLinkStyles} onClick={() => setOpen(false)}>
-            Dashboard
-          </NavLink>
-        </li>
-      )}
-      <li>
-        <NavLink to="/about" className={navLinkStyles} onClick={() => setOpen(false)}>
-          About Us
-        </NavLink>
-      </li>
-      <li>
-        <NavLink to="/contact" className={navLinkStyles} onClick={() => setOpen(false)}>
-          Contact
-        </NavLink>
-      </li>
+      <li><NavLink to="/" className={navLinkClasses} onClick={() => setOpen(false)}>Home</NavLink></li>
+      <li><NavLink to="/all-loans" className={navLinkClasses} onClick={() => setOpen(false)}>All Loans</NavLink></li>
+      {user && <li><NavLink to="/dashboard" className={navLinkClasses} onClick={() => setOpen(false)}>Dashboard</NavLink></li>}
+      <li><NavLink to="/about" className={navLinkClasses} onClick={() => setOpen(false)}>About</NavLink></li>
+      <li><NavLink to="/contact" className={navLinkClasses} onClick={() => setOpen(false)}>Contact</NavLink></li>
     </>
   );
 
   return (
-    <nav className="sticky top-0 z-50 w-full bg-base-100 border-b border-base-300 transition-colors duration-300">
-      <div className="container mx-auto px-6 py-4">
-        <div className="flex justify-between items-center">
-          {/* Logo */}
-          <Link
-            to="/"
-            className="flex items-center gap-2 group border border-transparent dark:border-gray-600 p-1 rounded-lg"
-          >
-            <div className="relative flex items-center justify-center w-10 h-10 bg-gradient-to-br from-blue-600 to-indigo-600 rounded-xl shadow-lg shadow-blue-500/30 group-hover:scale-105 transition-transform duration-300">
-              <span className="text-white font-bold text-2xl font-sans">L</span>
+    <nav className="sticky top-0 z-50 w-full bg-base-100/80 backdrop-blur-xl border-b border-base-300/50 shadow-sm">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex justify-between items-center h-16">
+
+          <Link to="/" className="flex items-center gap-3 group">
+            <div className="relative p-2 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl shadow-2xl shadow-indigo-500/30 group-hover:scale-110 transition-all duration-300">
+              <FiZap className="w-7 h-7 text-white rotate-12" />
+              <div className="absolute inset-0 rounded-2xl bg-white/20 blur-xl"></div>
             </div>
-            <span className="text-2xl font-bold bg-clip-text text-transparent bg-gradient-to-r from-gray-800 to-gray-600 dark:from-white dark:to-gray-300 tracking-tight hidden sm:block">
-              LoanLink
-            </span>
+            <div className="hidden sm:block">
+              <h1 className="text-2xl font-black bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                LoanLink
+              </h1>
+              <p className="text-xs text-base-content/60 -mt-1 tracking-widest">MICRO FINANCE</p>
+            </div>
           </Link>
 
-          {/* Desktop Menu */}
-          <ul className="hidden lg:flex items-center space-x-1">{menuItems}</ul>
+          <ul className="hidden lg:flex items-center gap-8">
+            {menuItems}
+          </ul>
 
-          {/* Desktop Auth Buttons */}
-          <div className="hidden lg:flex gap-4 items-center">
-            <button onClick={toggleTheme} className="btn btn-ghost btn-circle" title="Toggle Theme">
-              {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
+          <div className="hidden lg:flex items-center gap-4">
+            <button onClick={toggleTheme} className="p-3 rounded-2xl bg-base-200/50 hover:bg-base-300 transition-all duration-300 hover:scale-110">
+              {theme === "light" ? <FiMoon className="w-5 h-5" /> : <FiSun className="w-5 h-5 text-yellow-500" />}
             </button>
 
             {user ? (
-              <div className="flex items-center gap-3 pl-3 border-l border-base-300">
-                <div className="tooltip tooltip-bottom" data-tip={user.displayName} title={user.displayName}>
-                  {user.photoURL ? (
-                    <img
-                      src={user.photoURL}
-                      alt="User"
-                      className="w-10 h-10 rounded-full object-cover ring-2 ring-primary cursor-pointer hover:ring-secondary transition-all"
-                    />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-gradient-to-r from-blue-500 to-indigo-500 flex items-center justify-center text-white font-bold shadow-md cursor-pointer">
-                      {user.displayName?.charAt(0) || "U"}
-                    </div>
-                  )}
+              <div className="flex items-center gap-4">
+                <div className="avatar online">
+                  <div className="w-11 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2">
+                    <img src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName || "User"}&background=6366f1&color=fff`} alt="user" />
+                  </div>
                 </div>
-                <button onClick={handleLogout} className="btn btn-error gap-2">
+                <button onClick={handleLogout} className="btn btn-outline btn-error btn-sm rounded-xl gap-2">
                   <FiLogOut /> Logout
                 </button>
               </div>
             ) : (
-              <div className="flex items-center gap-3">
-                <Link to="/login" className="btn btn-ghost">
-                  Login
-                </Link>
-                <Link to="/register" className="btn btn-primary">
-                  Register
-                </Link>
+              <div className="flex gap-3">
+                <Link to="/login" className="btn btn-ghost rounded-xl">Login</Link>
+                <Link to="/register" className="btn btn-primary rounded-xl shadow-lg shadow-primary/30">Register</Link>
               </div>
             )}
           </div>
 
-          {/* Mobile Buttons */}
-          <div className="flex items-center gap-2 lg:hidden">
-            <button onClick={toggleTheme} className="btn btn-ghost btn-circle">
-              {theme === "light" ? <FiMoon size={20} /> : <FiSun size={20} />}
+          <div className="flex items-center gap-3 lg:hidden">
+            <button onClick={toggleTheme} className="p-2.5 rounded-xl bg-base-200/50 hover:bg-base-300 transition-all">
+              {theme === "light" ? <FiMoon className="w-5 h-5" /> : <FiSun className="w-5 h-5 text-yellow-500" />}
             </button>
-            <button onClick={() => setOpen(!open)} className="btn btn-ghost btn-circle">
-              {open ? <FiX size={24} /> : <FiMenu size={24} />}
+            <button onClick={() => setOpen(!open)} className="p-2.5 rounded-xl bg-base-200/50 hover:bg-base-300 transition-all">
+              {open ? <FiX className="w-6 h-6" /> : <FiMenu className="w-6 h-6" />}
             </button>
           </div>
         </div>
       </div>
 
-      {/* Mobile Menu */}
-      <div
-        className={`lg:hidden absolute w-full bg-base-100 border-b border-base-300 shadow-xl transition-all duration-300 ease-in-out origin-top z-40 ${
-          open ? "opacity-100 scale-y-100" : "opacity-0 scale-y-0 h-0 overflow-hidden"
-        }`}
-      >
-        <div className="p-6 space-y-4">
-          <ul className="space-y-2 flex flex-col">{menuItems}</ul>
-          <div className="pt-4 mt-4 border-t border-base-300">
+      <div className={`lg:hidden absolute top-full left-0 w-full bg-base-100/95 backdrop-blur-2xl border-t border-base-300 shadow-2xl transition-all duration-500 ease-out ${open ? "translate-y-0 opacity-100" : "-translate-y-10 opacity-0 pointer-events-none"}`}>
+        <div className="px-6 py-8 space-y-6">
+          <ul className="space-y-4">
+            {menuItems}
+          </ul>
+
+          <div className="pt-6 border-t border-base-300">
             {user ? (
-              <div className="space-y-4">
-                <div className="flex items-center gap-3 bg-base-200 p-3 rounded-xl">
-                  {user.photoURL ? (
-                    <img src={user.photoURL} alt="User" className="w-10 h-10 rounded-full object-cover" />
-                  ) : (
-                    <div className="w-10 h-10 rounded-full bg-blue-100 flex items-center justify-center text-blue-600 font-bold">
-                      {user.displayName?.charAt(0)}
+              <div className="space-y-5">
+                <div className="flex items-center gap-4 p-4 bg-base-200/50 rounded-2xl">
+                  <div className="avatar">
+                    <div className="w-14 rounded-full ring ring-primary ring-offset-2 ring-offset-base-100">
+                      <img src={user.photoURL || `https://ui-avatars.com/api/?name=${user.displayName}&background=6366f1&color=fff`} />
                     </div>
-                  )}
+                  </div>
                   <div>
-                    <p className="font-semibold text-base-content">{user.displayName || "User"}</p>
-                    <p className="text-sm text-base-content/70">{user.email}</p>
+                    <p className="font-bold text-lg">{user.displayName || "User"}</p>
+                    <p className="text-sm text-base-content/60">{user.email}</p>
                   </div>
                 </div>
-                <button onClick={handleLogout} className="btn btn-error w-full gap-2">
-                  Logout
+                <button onClick={handleLogout} className="btn btn-error w-full rounded-xl">
+                  <FiLogOut className="w-5 h-5" /> Logout
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-2 gap-3">
-                <Link to="/login" onClick={() => setOpen(false)} className="btn btn-ghost w-full">
-                  Login
-                </Link>
-                <Link to="/register" onClick={() => setOpen(false)} className="btn btn-primary w-full">
-                  Register
-                </Link>
+              <div className="grid grid-cols-2 gap-4">
+                <Link to="/login" onClick={() => setOpen(false)} className="btn btn-ghost rounded-xl">Login</Link>
+                <Link to="/register" onClick={() => setOpen(false)} className="btn btn-primary rounded-xl">Register</Link>
               </div>
             )}
           </div>
