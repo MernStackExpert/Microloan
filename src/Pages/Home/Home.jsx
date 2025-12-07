@@ -5,6 +5,7 @@ import PopularLoans from "./PopularLoans/PopularLoans";
 import OurServices from "./services/OurServices ";
 import Testimonials from "./Testimonials/Testimonials";
 import GetStarted from "./GetStarted/GetStarted";
+import FAQ from "./FAQ/FAQ"
 
 const Home = () => {
   return (
@@ -15,6 +16,7 @@ const Home = () => {
       <OurServices/>
       <Testimonials/>
       <GetStarted/>
+      <FAQ/>
     </div>
   );
 };

@@ -65,7 +65,7 @@ const Testimonials = () => {
             768: { slidesPerView: 2 },
             1024: { slidesPerView: 3 }
           }}
-          autoplay={{ delay: 4000, disableOnInteraction: false }}
+          autoplay={{ delay: 2000, disableOnInteraction: false }}
           loop={true}
           pagination={{ clickable: true }}
           navigation={true}

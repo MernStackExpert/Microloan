@@ -32,6 +32,7 @@ const Register = () => {
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
   const onSubmit = async (data) => {
+    
     const { name, email, role, password, photoURL, imageFile } = data;
     const toastId = toast.loading('Creating account...');
 
