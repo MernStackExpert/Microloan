@@ -176,7 +176,7 @@ const AddLoan = () => {
                   </label>
                   <input
                     type="number"
-                    placeholder="50000"
+                    placeholder="Amount"
                     className={`input input-bordered w-full ${errors.maxLoanLimit ? 'input-error' : ''}`}
                     {...register('maxLoanLimit', { required: 'Max limit is required', min: 1000 })}
                   />

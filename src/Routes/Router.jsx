@@ -9,6 +9,7 @@ import AllLoans from "../Pages/AllLoans/AllLoans";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import AddLoan from "../Pages/Dashbord/AddLOan/AddLoan";
 import MangeLoan from "../Pages/Dashbord/ManageLoan.jsx/MangeLoan";
+import MyProfile from "../Pages/Dashbord/MyProfile/MyProfile";
 
 export const Router = createBrowserRouter([
   {
@@ -52,6 +53,10 @@ export const Router = createBrowserRouter([
       {
         path: "manage-loans",
         element: <MangeLoan/>
+      },
+      {
+        path: "profile",
+        element: <MyProfile/>
       }
     ],
   },
