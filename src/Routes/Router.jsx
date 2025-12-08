@@ -18,6 +18,11 @@ import AdminHome from "../Pages/Dashbord/AdminHome/AdminHome";
 import UserHome from "../Pages/Dashbord/UserHome/UserHome";
 import MyLoans from "../Pages/Dashbord/UserHome/MyLoans/MyLoans";
 import LoanApplication from "../Pages/LoanApplication/LoanApplication";
+import PendingLoans from "../Pages/Dashbord/ManagerHome/PendingLoans/PendingLoans";
+import ApprovedLoans from "../Pages/Dashbord/ManagerHome/ApprovedLoans/ApprovedLoans";
+import ManageUsers from "../Pages/Dashbord/AdminHome/ManageUsers/ManageUsers";
+import AdminAllLoans from "../Pages/Dashbord/AdminHome/AdminAllLoans/AdminAllLoans";
+import LoanApplications from "../Pages/Dashbord/AdminHome/LoanApplications/LoanApplications";
 
 export const Router = createBrowserRouter([
   {
@@ -49,13 +54,13 @@ export const Router = createBrowserRouter([
         element: <AllLoans />,
       },
       {
-       path: "/loan-details/:id",
-       element: <LoanDetails/>
+        path: "/loan-details/:id",
+        element: <LoanDetails />,
       },
       {
         path: "/loan-application",
-        element: <LoanApplication/>
-      }
+        element: <LoanApplication />,
+      },
     ],
   },
   {
@@ -64,41 +69,60 @@ export const Router = createBrowserRouter([
     children: [
       {
         index: true,
-        element: <DashboardNavigate/>
+        element: <DashboardNavigate />,
       },
       {
         path: "manager-home",
-        element: <ManagerHome/>
+        element: <ManagerHome />,
       },
       {
         path: "admin-home",
-        element: <AdminHome/>
+        element: <AdminHome />,
       },
       {
         path: "user-home",
-        element: <UserHome/>
+        element: <UserHome />,
       },
       {
         path: "add-loan",
-        element: <AddLoan/>
+        element: <AddLoan />,
       },
       {
         path: "manage-loans",
-        element: <MangeLoan/>
+        element: <MangeLoan />,
       },
       {
         path: "profile",
-        element: <MyProfile/>
+        element: <MyProfile />,
       },
       {
         path: "update-loan/:id",
-        element: <UpdateLoan/>
+        element: <UpdateLoan />,
       },
       {
         path: "my-loans",
-        element: <MyLoans/>
-      }
-      
+        element: <MyLoans />,
+      },
+      {
+        path: "pending-loans",
+        element: <PendingLoans />,
+      },
+      {
+        path: "approved-loans",
+        element: <ApprovedLoans />,
+      },
+      {
+        path: "manage-users",
+        element: <ManageUsers />,
+      },
+      {
+        path: "all-loans",
+        element: <AdminAllLoans />,
+      },
+      {
+        path: "loan-applications",
+        element: <LoanApplications />,
+      },
     ],
   },
 ]);
