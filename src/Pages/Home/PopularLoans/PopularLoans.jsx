@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { Link } from "react-router";
-import axios from "axios";
+import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 
 const PopularLoans = () => {
+  const axiosSecure = useAxiosSecure()
   const [loans, setLoans] = useState([]);
   const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
+useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const res = await axios.get(
-          "http://localhost:3000/loans?showOnHome=true&limit=6"
-        );
-        setLoans(res.data.data || res.data);
+        const res = await axiosSecure.get("/loans");
+        const allData = res.data.data || res.data;
+
+        const homePageLoans = allData
+          .filter(loan => loan.showOnHome === true) 
+          .slice(0, 6); 
+
+        setLoans(homePageLoans);
         setLoading(false);
       } catch (err) {
         console.error(err);

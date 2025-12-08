@@ -1,4 +1,4 @@
-import React, {useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
@@ -50,7 +50,10 @@ const AllLoans = () => {
   const currentLoans = filteredLoans.slice(indexOfFirstLoan, indexOfLastLoan);
   const totalPages = Math.ceil(filteredLoans.length / loansPerPage);
 
-  const handlePageChange = (page) => setCurrentPage(page);
+  const handlePageChange = (page) => {
+    setCurrentPage(page);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const cardVariants = {
     hidden: { opacity: 0, y: 40 },
@@ -123,14 +126,14 @@ const AllLoans = () => {
                 whileHover={{ y: -8, transition: { duration: 0.3 } }}
               >
                 <div className="card bg-base-100 shadow-md border border-base-300 rounded-3xl overflow-hidden transition-all duration-300 h-full flex flex-col">
-                  <figure className="h-56 overflow-hidden bg-base-200">
+                  <figure className="h-56 overflow-hidden bg-base-200 relative">
                     <img
-                      src={loan.image}
+                      src={loan.loanImage || loan.image} 
                       alt={loan.title}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                     />
                     <div className="absolute top-4 left-4">
-                      <span className="badge badge-primary badge-lg font-bold shadow-lg">
+                      <span className="badge badge-primary badge-lg font-bold shadow-lg text-white">
                         {loan.category}
                       </span>
                     </div>
@@ -140,16 +143,16 @@ const AllLoans = () => {
                     <h3 className="text-2xl font-bold text-base-content mb-2">
                       {loan.title}
                     </h3>
-                    <p className="text-base-content/70 line-clamp-4 flex-grow">
+                    <p className="text-base-content/70 line-clamp-3 flex-grow">
                       {loan.description}
                     </p>
 
-                    <div className="mt-5 flex items-center justify-between">
+                    <div className="mt-5 flex items-center justify-between border-t border-base-300 pt-4">
                       <div>
                         <span className="text-sm font-medium text-base-content/60">
                           Max Amount
                         </span>
-                        <p className="text-2xl font-extrabold text-primary mt-1">
+                        <p className="text-xl font-extrabold text-primary mt-1">
                           ৳{loan.maxLoanLimit}
                         </p>
                       </div>
@@ -157,17 +160,17 @@ const AllLoans = () => {
                         <span className="text-sm font-medium text-base-content/60">
                           Interest
                         </span>
-                        <p className="text-xl font-bold text-secondary">
+                        <p className="text-lg font-bold text-secondary">
                           {loan.interestRate}%{" "}
-                          <small className="text-xs">/year</small>
+                          <small className="text-xs font-normal">/year</small>
                         </p>
                       </div>
                     </div>
 
-                    <div className="mt-4">
+                    <div className="mt-6">
                       <Link
                         to={`/loan-details/${loan._id}`}
-                        className="btn btn-primary w-full rounded-full shadow-lg hover:shadow-2xl transform hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2 text-lg font-semibold"
+                        className="btn btn-primary w-full rounded-xl shadow-lg hover:shadow-2xl transition-all duration-300 text-lg font-semibold text-white"
                       >
                         View Details
                       </Link>
@@ -180,18 +183,34 @@ const AllLoans = () => {
         </div>
 
         {totalPages > 1 && (
-          <div className="flex justify-center items-center mt-10 gap-3">
+          <div className="flex justify-center items-center mt-12 gap-2">
+            <button
+              onClick={() => handlePageChange(currentPage - 1)}
+              disabled={currentPage === 1}
+              className="btn btn-outline btn-sm"
+            >
+              Prev
+            </button>
+            
             {Array.from({ length: totalPages }, (_, i) => i + 1).map((num) => (
               <button
                 key={num}
                 onClick={() => handlePageChange(num)}
                 className={`btn btn-sm ${
-                  num === currentPage ? "btn-primary" : "btn-outline"
+                  num === currentPage ? "btn-primary text-white" : "btn-outline"
                 }`}
               >
                 {num}
               </button>
             ))}
+
+            <button
+              onClick={() => handlePageChange(currentPage + 1)}
+              disabled={currentPage === totalPages}
+              className="btn btn-outline btn-sm"
+            >
+              Next
+            </button>
           </div>
         )}
       </div>
