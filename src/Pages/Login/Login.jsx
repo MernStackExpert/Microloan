@@ -5,8 +5,10 @@ import toast from 'react-hot-toast';
 import { FcGoogle } from 'react-icons/fc';
 import { MdOutlineEmail, MdLockOutline } from 'react-icons/md';
 import { AuthContext } from '../../Provider/AuthContext';
+import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
 const Login = () => {
+  const axiosSecure = useAxiosSecure()
   const navigate = useNavigate();
   const { signInUser, signInWithGoogle } = useContext(AuthContext);
 
@@ -28,16 +30,32 @@ const Login = () => {
     }
   };
 
-  const handleGoogleLogin = async () => {
-    const toastId = toast.loading('Signing in with Google...');
-    try {
-      await signInWithGoogle();
-      toast.success('Google Login Successful!', { id: toastId });
-      navigate('/');
-    } catch (error) {
-      toast.error(error.message || 'Google login failed', { id: toastId });
-    }
-  };
+const handleGoogleLogin = async () => {
+  const toastId = toast.loading('Signing in with Google...');
+  try {
+    const result = await signInWithGoogle();  // Firebase Google login
+    const firebaseUser = result.user;
+
+    // Prepare user info
+    const currentUser = {
+     displayName: firebaseUser.displayName,
+      email: firebaseUser.email,
+      photoURL: firebaseUser.photoURL,
+      role: "borrower",
+    };
+
+    await axiosSecure.post("/users", currentUser);
+
+    toast.success('Google Login Successful!', { id: toastId });
+    navigate("/");
+
+  } catch (error) {
+    toast.error(error.message || 'Google login failed', { id: toastId });
+  }
+};
+
+
+
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 px-4 py-12">

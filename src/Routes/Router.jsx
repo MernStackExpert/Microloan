@@ -7,6 +7,7 @@ import Contact from "../Pages/Contact/Contact";
 import About from "../Pages/About/About";
 import AllLoans from "../Pages/AllLoans/AllLoans";
 import DashboardLayout from "../Layouts/DashboardLayout";
+import AddLoan from "../Pages/Dashbord/AddLOan/AddLoan";
 
 export const Router = createBrowserRouter([
   {
@@ -42,19 +43,11 @@ export const Router = createBrowserRouter([
   {
     path: "/dashboard",
     element: <DashboardLayout />,
-    // children: [
-    //   // Admin Routes
-    //   { path: "manage-users", element: <ManageUsers /> },
-    //   { path: "all-loans", element: <AllLoansAdmin /> }, // Admin version
-
-    //   // Manager Routes
-    //   { path: "add-loan", element: <AddLoan /> },
-    //   { path: "manage-loans", element: <ManageLoans /> },
-    //   { path: "pending-loans", element: <PendingLoans /> },
-
-    //   // Borrower Routes
-    //   { path: "my-loans", element: <MyLoans /> },
-    //   { path: "profile", element: <Profile /> },
-    // ],
+    children: [
+      {
+        path: "add-loan",
+        element: <AddLoan/>
+      }
+    ],
   },
 ]);

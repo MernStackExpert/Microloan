@@ -14,8 +14,8 @@ import { MdDashboard } from "react-icons/md";
 const DashboardLayout = () => {
 
   const isAdmin = false;
-  const isManager = false; 
-  const isBorrower = true;
+  const isManager = true; 
+  const isBorrower = false;
 
   return (
     <div className="drawer lg:drawer-open">

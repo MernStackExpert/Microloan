@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from "react";
+import React, {useEffect, useState } from "react";
 import { Link } from "react-router";
-import axios from "axios";
 import { motion } from "framer-motion";
+import useAxiosSecure from "../../Hooks/useAxiosSecure";
 
 const AllLoans = () => {
+  const axiosSecure = useAxiosSecure();
   const [loans, setLoans] = useState([]);
   const [filteredLoans, setFilteredLoans] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -15,7 +16,7 @@ const AllLoans = () => {
   useEffect(() => {
     const fetchLoans = async () => {
       try {
-        const res = await axios.get("http://localhost:3000/loans");
+        const res = await axiosSecure.get("/loans");
         const data = res.data.data || res.data;
         setLoans(data);
         setFilteredLoans(data);
@@ -26,7 +27,7 @@ const AllLoans = () => {
       }
     };
     fetchLoans();
-  }, []);
+  }, [axiosSecure]);
 
   useEffect(() => {
     let temp = [...loans];
@@ -76,7 +77,8 @@ const AllLoans = () => {
             All <span className="text-primary">Loans</span>
           </h2>
           <p className="mt-4 text-base-content/70 max-w-3xl mx-auto">
-            Explore all available microloan options. Choose the one that fits your needs and apply with ease.
+            Explore all available microloan options. Choose the one that fits
+            your needs and apply with ease.
           </p>
         </div>
 
@@ -94,9 +96,13 @@ const AllLoans = () => {
             onChange={(e) => setCategoryFilter(e.target.value)}
           >
             <option value="all">All Categories</option>
-            {Array.from(new Set(loans.map((loan) => loan.category))).map((cat) => (
-              <option key={cat} value={cat}>{cat}</option>
-            ))}
+            {Array.from(new Set(loans.map((loan) => loan.category))).map(
+              (cat) => (
+                <option key={cat} value={cat}>
+                  {cat}
+                </option>
+              )
+            )}
           </select>
         </div>
 
@@ -152,7 +158,8 @@ const AllLoans = () => {
                           Interest
                         </span>
                         <p className="text-xl font-bold text-secondary">
-                          {loan.interestRate}% <small className="text-xs">/year</small>
+                          {loan.interestRate}%{" "}
+                          <small className="text-xs">/year</small>
                         </p>
                       </div>
                     </div>
@@ -178,7 +185,9 @@ const AllLoans = () => {
               <button
                 key={num}
                 onClick={() => handlePageChange(num)}
-                className={`btn btn-sm ${num === currentPage ? "btn-primary" : "btn-outline"}`}
+                className={`btn btn-sm ${
+                  num === currentPage ? "btn-primary" : "btn-outline"
+                }`}
               >
                 {num}
               </button>
