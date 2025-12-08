@@ -8,14 +8,13 @@ const LoanApplications = () => {
     const [filteredApps, setFilteredApps] = useState([]);
     const [loading, setLoading] = useState(true);
     const [filterStatus, setFilterStatus] = useState('all');
+    const [searchTerm, setSearchTerm] = useState('');
     const [selectedApp, setSelectedApp] = useState(null);
 
-    // 1. Fetch All Applications
     useEffect(() => {
         const fetchApplications = async () => {
             try {
-                // Admin can see ALL applications
-                const res = await axiosSecure.get('/applications'); 
+                const res = await axiosSecure.get('/applications');
                 setApplications(res.data);
                 setFilteredApps(res.data);
                 setLoading(false);
@@ -27,17 +26,23 @@ const LoanApplications = () => {
         fetchApplications();
     }, [axiosSecure]);
 
-    // 2. Handle Filter Logic
     useEffect(() => {
-        if (filterStatus === 'all') {
-            setFilteredApps(applications);
-        } else {
-            const filtered = applications.filter(app => app.status === filterStatus);
-            setFilteredApps(filtered);
-        }
-    }, [filterStatus, applications]);
+        let result = applications;
 
-    // 3. View Details Modal
+        if (filterStatus !== 'all') {
+            result = result.filter(app => app.status === filterStatus);
+        }
+
+        if (searchTerm) {
+            result = result.filter(app => 
+                app.applicantName.toLowerCase().includes(searchTerm.toLowerCase()) || 
+                app.email.toLowerCase().includes(searchTerm.toLowerCase())
+            );
+        }
+
+        setFilteredApps(result);
+    }, [filterStatus, searchTerm, applications]);
+
     const handleViewDetails = (app) => {
         setSelectedApp(app);
         document.getElementById('admin_app_details_modal').showModal();
@@ -48,17 +53,27 @@ const LoanApplications = () => {
     }
 
     return (
-        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-6 border border-base-200">
+        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
             
-            {/* Header & Filter Section */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <div>
+                <div className="w-full md:w-auto">
                     <h2 className="text-3xl font-bold text-primary">Loan Applications</h2>
-                    <p className="text-base-content/60">Monitor all loan requests from users.</p>
+                    <p className="text-base-content/60">Monitor all loan requests.</p>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <div className="relative">
+                <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+                    <div className="relative w-full sm:w-64">
+                        <input 
+                            type="text" 
+                            placeholder="Search Name or Email..." 
+                            className="input input-bordered w-full pl-10 focus:input-primary"
+                            value={searchTerm}
+                            onChange={(e) => setSearchTerm(e.target.value)}
+                        />
+                        <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+                    </div>
+
+                    <div className="relative w-full sm:w-48">
                         <select 
                             className="select select-bordered w-full pl-10 focus:select-primary"
                             value={filterStatus}
@@ -71,16 +86,11 @@ const LoanApplications = () => {
                         </select>
                         <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
                     </div>
-                    <div className="badge badge-lg badge-primary badge-outline">
-                        Total: {filteredApps.length}
-                    </div>
                 </div>
             </div>
 
-            {/* Table Section */}
-            <div className="overflow-x-auto">
+            <div className="hidden lg:block overflow-x-auto">
                 <table className="table table-zebra w-full align-middle">
-                    {/* Head */}
                     <thead className="bg-base-200 text-base-content text-sm uppercase">
                         <tr>
                             <th>Loan ID</th>
@@ -91,8 +101,6 @@ const LoanApplications = () => {
                             <th className="text-center">Action</th>
                         </tr>
                     </thead>
-                    
-                    {/* Body */}
                     <tbody>
                         {filteredApps.length > 0 ? (
                             filteredApps.map((app) => (
@@ -100,7 +108,6 @@ const LoanApplications = () => {
                                     <td className="font-mono text-xs opacity-70">
                                         {app._id.slice(-6).toUpperCase()}...
                                     </td>
-                                    
                                     <td>
                                         <div className="flex items-center gap-3">
                                             <div className="avatar placeholder">
@@ -114,15 +121,8 @@ const LoanApplications = () => {
                                             </div>
                                         </div>
                                     </td>
-
-                                    <td>
-                                        <div className="badge badge-ghost badge-sm">{app.category}</div>
-                                    </td>
-
-                                    <td className="font-bold text-secondary">
-                                        ৳{app.loanAmount}
-                                    </td>
-
+                                    <td><div className="badge badge-ghost badge-sm">{app.category}</div></td>
+                                    <td className="font-bold text-secondary">৳{app.loanAmount}</td>
                                     <td>
                                         <div className={`badge text-white ${
                                             app.status === 'pending' ? 'badge-warning' :
@@ -131,12 +131,10 @@ const LoanApplications = () => {
                                             {app.status}
                                         </div>
                                     </td>
-
                                     <td className="text-center">
                                         <button 
                                             onClick={() => handleViewDetails(app)}
-                                            className="btn btn-sm btn-ghost text-blue-600 tooltip"
-                                            data-tip="View Full Details"
+                                            className="btn btn-sm btn-ghost text-blue-600"
                                         >
                                             <FaEye className="w-5 h-5" />
                                         </button>
@@ -146,7 +144,7 @@ const LoanApplications = () => {
                         ) : (
                             <tr>
                                 <td colSpan="6" className="text-center py-10 text-gray-500">
-                                    No applications found for this filter.
+                                    No applications found.
                                 </td>
                             </tr>
                         )}
@@ -154,42 +152,94 @@ const LoanApplications = () => {
                 </table>
             </div>
 
-            {/* Modal for View Details */}
-            <dialog id="admin_app_details_modal" className="modal modal-bottom sm:modal-middle">
-                <div className="modal-box">
-                    <h3 className="font-bold text-2xl text-primary mb-4 flex items-center gap-2">
-                        <FaFileInvoiceDollar /> Application Details
-                    </h3>
-                    {selectedApp && (
-                        <div className="space-y-3 text-sm">
-                            <div className="bg-base-200 p-3 rounded-lg grid grid-cols-2 gap-2">
-                                <span className="opacity-60">Status:</span>
-                                <span className={`font-bold uppercase ${
-                                    selectedApp.status === 'approved' ? 'text-success' : 
-                                    selectedApp.status === 'rejected' ? 'text-error' : 'text-warning'
-                                }`}>{selectedApp.status}</span>
-                                
-                                <span className="opacity-60">Applied Date:</span>
-                                <span>{new Date(selectedApp.createdAt).toLocaleDateString()}</span>
+            <div className="grid grid-cols-1 gap-4 lg:hidden">
+                {filteredApps.length > 0 ? (
+                    filteredApps.map((app) => (
+                        <div key={app._id} className="card bg-base-100 border border-base-200 shadow-sm p-4">
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-2">
+                                    <div className="bg-neutral/10 p-2 rounded-full text-neutral"><FaUser /></div>
+                                    <div>
+                                        <h3 className="font-bold text-base">{app.applicantName}</h3>
+                                        <p className="text-xs text-base-content/60">{app.email}</p>
+                                    </div>
+                                </div>
+                                <div className={`badge text-white text-xs ${
+                                    app.status === 'pending' ? 'badge-warning' :
+                                    app.status === 'approved' ? 'badge-success' : 'badge-error'
+                                }`}>
+                                    {app.status}
+                                </div>
+                            </div>
+                            
+                            <div className="bg-base-200/50 p-3 rounded-lg mb-3 space-y-1 text-sm">
+                                <div className="flex justify-between">
+                                    <span className="opacity-70">Category:</span>
+                                    <span className="font-medium">{app.category}</span>
+                                </div>
+                                <div className="flex justify-between">
+                                    <span className="opacity-70">Amount:</span>
+                                    <span className="font-bold text-secondary">৳{app.loanAmount}</span>
+                                </div>
                             </div>
 
-                            <div className="divider">Loan Info</div>
-                            <p><strong>Title:</strong> {selectedApp.loanTitle}</p>
-                            <p><strong>Category:</strong> {selectedApp.category}</p>
-                            <p><strong>Amount:</strong> <span className="text-lg font-bold text-secondary">৳{selectedApp.loanAmount}</span></p>
-                            <p><strong>Term:</strong> {selectedApp.emiPlans || "N/A"}</p>
+                            <button 
+                                onClick={() => handleViewDetails(app)}
+                                className="btn btn-sm btn-outline btn-primary w-full"
+                            >
+                                <FaEye /> View Details
+                            </button>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-10 text-gray-500">
+                        No applications found.
+                    </div>
+                )}
+            </div>
 
-                            <div className="divider">Applicant Info</div>
-                            <p><strong>Name:</strong> {selectedApp.applicantName}</p>
-                            <p><strong>Email:</strong> {selectedApp.email}</p>
-                            <p><strong>Phone:</strong> {selectedApp.phone}</p>
-                            <p><strong>Income Source:</strong> {selectedApp.incomeSource} (৳{selectedApp.monthlyIncome}/mo)</p>
-                            <p><strong>Address:</strong> {selectedApp.address}</p>
+            <dialog id="admin_app_details_modal" className="modal modal-bottom sm:modal-middle">
+                <div className="modal-box w-11/12 max-w-3xl">
+                    <h3 className="font-bold text-2xl text-primary mb-4 flex items-center gap-2 border-b pb-2">
+                        <FaFileInvoiceDollar /> Full Application Details
+                    </h3>
+                    {selectedApp && (
+                        <div className="space-y-4 text-sm md:text-base">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div className="bg-base-200 p-4 rounded-xl">
+                                    <h4 className="font-bold text-lg mb-3">Loan Information</h4>
+                                    <div className="space-y-2">
+                                        <p className="flex justify-between"><span>Title:</span> <span className="font-medium">{selectedApp.loanTitle}</span></p>
+                                        <p className="flex justify-between"><span>Category:</span> <span className="font-medium">{selectedApp.category}</span></p>
+                                        <p className="flex justify-between"><span>Amount:</span> <span className="font-bold text-secondary">৳{selectedApp.loanAmount}</span></p>
+                                        <p className="flex justify-between"><span>Interest:</span> <span className="font-medium">{selectedApp.interestRate}%</span></p>
+                                        <p className="flex justify-between"><span>EMI Plan:</span> <span className="font-medium">{selectedApp.emiPlans || "N/A"}</span></p>
+                                        <p className="flex justify-between"><span>Applied Date:</span> <span className="font-medium">{new Date(selectedApp.createdAt).toLocaleDateString()}</span></p>
+                                    </div>
+                                </div>
+
+                                <div className="bg-base-200 p-4 rounded-xl">
+                                    <h4 className="font-bold text-lg mb-3">Applicant Information</h4>
+                                    <div className="space-y-2">
+                                        <p className="flex justify-between"><span>Name:</span> <span className="font-medium">{selectedApp.applicantName}</span></p>
+                                        <p className="flex justify-between"><span>Email:</span> <span className="font-medium truncate w-32 text-right" title={selectedApp.email}>{selectedApp.email}</span></p>
+                                        <p className="flex justify-between"><span>Phone:</span> <span className="font-medium">{selectedApp.phone}</span></p>
+                                        <p className="flex justify-between"><span>NID/Passport:</span> <span className="font-medium text-info">{selectedApp.nid}</span></p>
+                                        <p className="flex justify-between"><span>Income:</span> <span className="font-medium">৳{selectedApp.monthlyIncome} ({selectedApp.incomeSource})</span></p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="bg-base-200 p-4 rounded-xl">
+                                <h4 className="font-bold text-lg mb-2">Address & Reason</h4>
+                                <p className="mb-2"><span className="opacity-70 font-semibold">Address:</span> {selectedApp.address}</p>
+                                <p><span className="opacity-70 font-semibold">Reason for Loan:</span> <span className="italic">"{selectedApp.reason}"</span></p>
+                            </div>
                         </div>
                     )}
                     <div className="modal-action">
                         <form method="dialog">
-                            <button className="btn">Close</button>
+                            <button className="btn btn-neutral">Close</button>
                         </form>
                     </div>
                 </div>
