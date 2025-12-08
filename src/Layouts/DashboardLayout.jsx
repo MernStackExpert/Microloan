@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Link, NavLink, Outlet } from "react-router"; 
 import {
   FaHome,
@@ -8,17 +8,46 @@ import {
   FaUserTie,
   FaFileInvoiceDollar,
   FaHistory,
+  FaBars,
 } from "react-icons/fa";
 import { MdDashboard } from "react-icons/md";
 import { FiSun, FiMoon } from "react-icons/fi";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
+import { AuthContext } from "../Provider/AuthContext";
+
 
 const DashboardLayout = () => {
-  const isAdmin = false;
-  const isManager = true; 
-  const isBorrower = false;
-
+  const { user, loading: authLoading } = useContext(AuthContext);
+  const axiosSecure = useAxiosSecure();
+  
+  const [role, setRole] = useState(null);
+  const [roleLoading, setRoleLoading] = useState(true);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
+  // Fetch user role from database
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure.get(`/users/${user.email}`)
+        .then(res => {
+          setRole(res.data?.role);
+          setRoleLoading(false);
+        })
+        .catch(err => {
+          console.error("Failed to fetch role", err);
+          setRoleLoading(false);
+        });
+    } else {
+      setRoleLoading(false);
+    }
+  }, [user?.email, axiosSecure]);
+
+  // Determine user status
+  const isAdmin = role === "admin";
+  const isManager = role === "manager";
+  // Default to borrower if logged in but no specific role assigned yet
+  const isBorrower = role === "borrower" || (user && !isAdmin && !isManager);
+
+  // Theme Toggling Logic
   useEffect(() => {
     document.documentElement.setAttribute("data-theme", theme);
     localStorage.setItem("theme", theme);
@@ -26,35 +55,52 @@ const DashboardLayout = () => {
 
   const toggleTheme = () => setTheme(theme === "light" ? "dark" : "light");
 
+  // Loading State
+  if (authLoading || roleLoading) {
+     return (
+       <div className="flex h-screen justify-center items-center bg-base-100">
+         <span className="loading loading-bars loading-lg text-primary"></span>
+       </div>
+     );
+  }
+
   return (
     <div className="drawer lg:drawer-open">
       <input id="my-drawer-2" type="checkbox" className="drawer-toggle" />
-      <div className="drawer-content flex flex-col items-center justify-center bg-base-100">
+      <div className="drawer-content flex flex-col bg-base-100">
         
-        <div className="w-full navbar bg-base-300 lg:hidden">
+        {/* Mobile Navbar */}
+        <div className="w-full navbar bg-base-100 border-b border-base-300 lg:hidden sticky top-0 z-50">
             <div className="flex-none">
                 <label htmlFor="my-drawer-2" className="btn btn-square btn-ghost">
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" className="inline-block w-6 h-6 stroke-current"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+                   <FaBars className="text-xl" />
                 </label>
             </div>
-            <div className="flex-1 px-2 mx-2 text-xl font-bold">LoanLink Dashboard</div>
+            <div className="flex-1 px-2 mx-2 text-xl font-bold text-primary">LoanLink Dashboard</div>
         </div>
         
-        <div className="w-full h-full p-5 lg:p-10">
+        {/* Main Content Outlet */}
+        <div className="w-full min-h-screen p-5 lg:p-10 bg-base-200/30">
             <Outlet />
         </div>
       
       </div> 
-      <div className="drawer-side">
+      <div className="drawer-side z-50">
         <label htmlFor="my-drawer-2" aria-label="close sidebar" className="drawer-overlay"></label> 
-        <ul className="menu p-4 w-80 min-h-full bg-base-200 text-base-content text-lg space-y-2">
+        <ul className="menu p-4 w-72 min-h-full bg-base-100 border-r border-base-300 text-base-content text-base font-medium space-y-1">
           
-          <div className="mb-6 text-center">
-             <Link to="/" className="text-3xl font-bold text-primary flex items-center justify-center gap-2">
-                <MdDashboard /> LoanLink
+          {/* Sidebar Header */}
+          <div className="mb-8 mt-2 text-center">
+             <Link to="/" className="text-2xl font-black flex items-center justify-center gap-2 text-primary">
+                <MdDashboard className="text-3xl" /> LoanLink
              </Link>
+             {/* Role Badge */}
+             <div className="badge badge-outline badge-primary mt-2 uppercase text-xs font-bold">
+                {role || "User"} Panel
+             </div>
           </div>
 
+          {/* ================= ADMIN ROUTES ================= */}
           {isAdmin && (
             <>
               <li><NavLink to="/dashboard/admin-home"><FaHome /> Admin Home</NavLink></li>
@@ -64,6 +110,7 @@ const DashboardLayout = () => {
             </>
           )}
 
+          {/* ================= MANAGER ROUTES ================= */}
           {isManager && (
             <>
               <li><NavLink to="/dashboard/manager-home"><FaHome /> Manager Home</NavLink></li>
@@ -75,6 +122,7 @@ const DashboardLayout = () => {
             </>
           )}
 
+          {/* ================= BORROWER ROUTES ================= */}
           {isBorrower && (
             <>
               <li><NavLink to="/dashboard/user-home"><FaHome /> User Home</NavLink></li>
@@ -83,10 +131,12 @@ const DashboardLayout = () => {
             </>
           )}
 
-          <div className="divider"></div>
+          {/* Shared Links */}
+          <div className="divider my-4"></div>
           <li><NavLink to="/"><FaHome /> Home</NavLink></li>
           <li><NavLink to="/all-loans"><FaClipboardList /> Available Loans</NavLink></li>
           
+          {/* Theme Toggle */}
           <li>
             <button onClick={toggleTheme} className="flex gap-3 items-center">
                 {theme === "light" ? <FiMoon /> : <FiSun className="text-yellow-500" />}

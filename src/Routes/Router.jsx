@@ -10,6 +10,8 @@ import DashboardLayout from "../Layouts/DashboardLayout";
 import AddLoan from "../Pages/Dashbord/AddLOan/AddLoan";
 import MangeLoan from "../Pages/Dashbord/ManageLoan.jsx/MangeLoan";
 import MyProfile from "../Pages/Dashbord/MyProfile/MyProfile";
+import LoanDetails from "../Pages/LoanDetailes/LoanDetails";
+import UpdateLoan from "../Pages/Dashbord/UpdateLoan/UpdateLoan";
 
 export const Router = createBrowserRouter([
   {
@@ -40,6 +42,10 @@ export const Router = createBrowserRouter([
         path: "/all-loans",
         element: <AllLoans />,
       },
+      {
+       path: "/loan-details/:id",
+       element: <LoanDetails/>
+      }
     ],
   },
   {
@@ -57,7 +63,12 @@ export const Router = createBrowserRouter([
       {
         path: "profile",
         element: <MyProfile/>
+      },
+      {
+        path: "update-loan/:id",
+        element: <UpdateLoan/>
       }
+      
     ],
   },
 ]);
