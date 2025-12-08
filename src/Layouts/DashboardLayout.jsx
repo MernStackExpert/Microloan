@@ -107,6 +107,7 @@ const DashboardLayout = () => {
               <li><NavLink to="/dashboard/manage-users"><FaUsers /> Manage Users</NavLink></li>
               <li><NavLink to="/dashboard/all-loans"><FaClipboardList /> All Loans</NavLink></li>
               <li><NavLink to="/dashboard/loan-applications"><FaFileInvoiceDollar /> Loan Applications</NavLink></li>
+               <li><NavLink to="/dashboard/profile"><FaUserTie /> My Profile</NavLink></li>
             </>
           )}
 

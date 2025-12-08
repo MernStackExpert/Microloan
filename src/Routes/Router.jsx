@@ -12,6 +12,11 @@ import MangeLoan from "../Pages/Dashbord/ManageLoan.jsx/MangeLoan";
 import MyProfile from "../Pages/Dashbord/MyProfile/MyProfile";
 import LoanDetails from "../Pages/LoanDetailes/LoanDetails";
 import UpdateLoan from "../Pages/Dashbord/UpdateLoan/UpdateLoan";
+import ManagerHome from "../Pages/Dashbord/ManagerHome/ManagerHome";
+import DashboardNavigate from "../Pages/DashboardNavigate/DashboardNavigate";
+import AdminHome from "../Pages/Dashbord/AdminHome/AdminHome";
+import UserHome from "../Pages/Dashbord/UserHome/UserHome";
+import MyLoans from "../Pages/Dashbord/UserHome/MyLoans/MyLoans";
 
 export const Router = createBrowserRouter([
   {
@@ -53,6 +58,22 @@ export const Router = createBrowserRouter([
     element: <DashboardLayout />,
     children: [
       {
+        index: true,
+        element: <DashboardNavigate/>
+      },
+      {
+        path: "manager-home",
+        element: <ManagerHome/>
+      },
+      {
+        path: "admin-home",
+        element: <AdminHome/>
+      },
+      {
+        path: "user-home",
+        element: <UserHome/>
+      },
+      {
         path: "add-loan",
         element: <AddLoan/>
       },
@@ -67,6 +88,10 @@ export const Router = createBrowserRouter([
       {
         path: "update-loan/:id",
         element: <UpdateLoan/>
+      },
+      {
+        path: "my-loans",
+        element: <MyLoans/>
       }
       
     ],
