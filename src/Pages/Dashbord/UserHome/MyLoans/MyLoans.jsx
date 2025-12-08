@@ -9,9 +9,8 @@ const MyLoans = () => {
     const axiosSecure = useAxiosSecure();
     const [applications, setApplications] = useState([]);
     const [loading, setLoading] = useState(true);
-    const [selectedLoan, setSelectedLoan] = useState(null); // ফর মডাল
+    const [selectedLoan, setSelectedLoan] = useState(null);
 
-    // 1. Fetch Data
     useEffect(() => {
         if (user?.email) {
             axiosSecure.get(`/applications/${user.email}`)
@@ -26,7 +25,6 @@ const MyLoans = () => {
         }
     }, [user?.email, axiosSecure]);
 
-    // 2. Handle Cancel Application
     const handleCancel = (id) => {
         Swal.fire({
             title: 'Are you sure?',
@@ -51,7 +49,6 @@ const MyLoans = () => {
         });
     };
 
-    // 3. Handle View Modal
     const handleViewDetails = (loan) => {
         setSelectedLoan(loan);
         document.getElementById('loan_details_modal').showModal();
@@ -62,12 +59,11 @@ const MyLoans = () => {
     }
 
     return (
-        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-6 border border-base-200">
-            <h2 className="text-3xl font-bold text-primary mb-6">My Loan Applications</h2>
+        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+            <h2 className="text-3xl font-bold text-primary mb-6 text-center md:text-left">My Loan Applications</h2>
 
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
                 <table className="table table-zebra w-full">
-                    {/* Head */}
                     <thead className="bg-base-200 text-base-content text-sm uppercase">
                         <tr>
                             <th>#</th>
@@ -78,30 +74,22 @@ const MyLoans = () => {
                             <th className="text-center">Actions</th>
                         </tr>
                     </thead>
-                    
-                    {/* Body */}
                     <tbody>
                         {applications.length > 0 ? (
                             applications.map((app, index) => (
                                 <tr key={app._id}>
                                     <th>{index + 1}</th>
-                                    
                                     <td>
                                         <div className="font-bold">{app.loanTitle || "Loan Name"}</div>
                                         <div className="text-xs opacity-50">{app.category || "Category"}</div>
                                     </td>
-                                    
                                     <td className="font-semibold text-secondary">৳{app.loanAmount}</td>
-                                    
                                     <td>
                                         {app.status === 'pending' && <span className="badge badge-warning gap-1"><FaHourglassStart/> Pending</span>}
                                         {app.status === 'approved' && <span className="badge badge-success gap-1 text-white"><FaCheckCircle/> Approved</span>}
                                         {app.status === 'rejected' && <span className="badge badge-error gap-1 text-white"><FaTimesCircle/> Rejected</span>}
                                     </td>
-
                                     <td>
-                                        {/* Challenge Requirement: Show Button if Unpaid, Badge if Paid */}
-                                        {/* আপাতত ডিফল্ট 'unpaid' ধরে নিচ্ছি, পরে পেমেন্ট গেটওয়ে অ্যাড হলে এটা আপডেট হবে */}
                                         {app.feeStatus === 'paid' ? (
                                             <span className="badge badge-outline badge-success font-bold">Paid</span>
                                         ) : (
@@ -110,10 +98,8 @@ const MyLoans = () => {
                                             </button>
                                         )}
                                     </td>
-
                                     <td className="text-center">
                                         <div className="flex justify-center gap-2">
-                                            {/* View Button */}
                                             <button 
                                                 onClick={() => handleViewDetails(app)}
                                                 className="btn btn-sm btn-circle btn-ghost text-blue-600 tooltip"
@@ -121,8 +107,6 @@ const MyLoans = () => {
                                             >
                                                 <FaEye className="w-5 h-5" />
                                             </button>
-
-                                            {/* Cancel Button - Only visible if Pending */}
                                             {app.status === 'pending' && (
                                                 <button 
                                                     onClick={() => handleCancel(app._id)}
@@ -147,7 +131,65 @@ const MyLoans = () => {
                 </table>
             </div>
 
-            {/* Modal for View Details */}
+            <div className="md:hidden grid grid-cols-1 gap-4">
+                {applications.length > 0 ? (
+                    applications.map((app, index) => (
+                        <div key={app._id} className="card bg-base-100 border border-base-200 shadow-sm p-4">
+                            <div className="flex justify-between items-start mb-2">
+                                <div>
+                                    <h3 className="font-bold text-lg text-primary">{app.loanTitle}</h3>
+                                    <p className="text-xs text-base-content/60">{app.category}</p>
+                                </div>
+                                <div className="text-right">
+                                    <p className="font-bold text-secondary">৳{app.loanAmount}</p>
+                                    <p className="text-xs text-base-content/60">{new Date(app.createdAt).toLocaleDateString()}</p>
+                                </div>
+                            </div>
+                            
+                            <div className="flex justify-between items-center my-3">
+                                <div>
+                                    {app.status === 'pending' && <span className="badge badge-warning gap-1 text-xs"><FaHourglassStart/> Pending</span>}
+                                    {app.status === 'approved' && <span className="badge badge-success gap-1 text-white text-xs"><FaCheckCircle/> Approved</span>}
+                                    {app.status === 'rejected' && <span className="badge badge-error gap-1 text-white text-xs"><FaTimesCircle/> Rejected</span>}
+                                </div>
+                                <div>
+                                     {app.feeStatus === 'paid' ? (
+                                        <span className="badge badge-outline badge-success text-xs font-bold">Fee Paid</span>
+                                    ) : (
+                                        <button className="btn btn-xs btn-outline btn-accent gap-1">
+                                            <FaCreditCard /> Pay Fee
+                                        </button>
+                                    )}
+                                </div>
+                            </div>
+
+                            <div className="divider my-1"></div>
+
+                            <div className="flex justify-end gap-3">
+                                <button 
+                                    onClick={() => handleViewDetails(app)}
+                                    className="btn btn-sm btn-ghost text-blue-600 gap-1"
+                                >
+                                    <FaEye /> Details
+                                </button>
+                                {app.status === 'pending' && (
+                                    <button 
+                                        onClick={() => handleCancel(app._id)}
+                                        className="btn btn-sm btn-ghost text-red-600 gap-1"
+                                    >
+                                        <FaTrashAlt /> Cancel
+                                    </button>
+                                )}
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-10 text-gray-500">
+                        You have no loan applications yet.
+                    </div>
+                )}
+            </div>
+
             <dialog id="loan_details_modal" className="modal modal-bottom sm:modal-middle">
                 <div className="modal-box">
                     <h3 className="font-bold text-2xl text-primary mb-4">Application Details</h3>

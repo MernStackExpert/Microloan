@@ -17,6 +17,7 @@ import DashboardNavigate from "../Pages/DashboardNavigate/DashboardNavigate";
 import AdminHome from "../Pages/Dashbord/AdminHome/AdminHome";
 import UserHome from "../Pages/Dashbord/UserHome/UserHome";
 import MyLoans from "../Pages/Dashbord/UserHome/MyLoans/MyLoans";
+import LoanApplication from "../Pages/LoanApplication/LoanApplication";
 
 export const Router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const Router = createBrowserRouter([
       {
        path: "/loan-details/:id",
        element: <LoanDetails/>
+      },
+      {
+        path: "/loan-application",
+        element: <LoanApplication/>
       }
     ],
   },
