@@ -8,6 +8,7 @@ import About from "../Pages/About/About";
 import AllLoans from "../Pages/AllLoans/AllLoans";
 import DashboardLayout from "../Layouts/DashboardLayout";
 import AddLoan from "../Pages/Dashbord/AddLOan/AddLoan";
+import MangeLoan from "../Pages/Dashbord/ManageLoan.jsx/MangeLoan";
 
 export const Router = createBrowserRouter([
   {
@@ -47,6 +48,10 @@ export const Router = createBrowserRouter([
       {
         path: "add-loan",
         element: <AddLoan/>
+      },
+      {
+        path: "manage-loans",
+        element: <MangeLoan/>
       }
     ],
   },
