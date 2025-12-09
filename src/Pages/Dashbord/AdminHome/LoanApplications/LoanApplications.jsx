@@ -230,6 +230,8 @@ const LoanApplications = () => {
                                 </div>
                             </div>
 
+                            
+
                             <div className="bg-base-200 p-4 rounded-xl">
                                 <h4 className="font-bold text-lg mb-2">Address & Reason</h4>
                                 <p className="mb-2"><span className="opacity-70 font-semibold">Address:</span> {selectedApp.address}</p>

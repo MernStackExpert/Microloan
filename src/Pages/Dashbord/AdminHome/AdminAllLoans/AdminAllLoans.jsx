@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
-import { FaEdit, FaTrash, FaHome, FaUserTie, FaSearch, FaFilter } from 'react-icons/fa';
+import { FaEdit, FaTrash, FaUserTie, FaSearch, FaFilter, FaEye } from 'react-icons/fa';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
 
 const AdminAllLoans = () => {
@@ -83,9 +83,9 @@ const AdminAllLoans = () => {
     }
 
     return (
-        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-6 border border-base-200">
+        <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <div>
+                <div className="w-full md:w-auto">
                     <h2 className="text-3xl font-bold text-primary">All System Loans</h2>
                     <p className="text-base-content/60">Manage all loans posted by managers.</p>
                 </div>
@@ -94,8 +94,8 @@ const AdminAllLoans = () => {
                     <div className="relative w-full sm:w-64">
                         <input
                             type="text"
-                            placeholder="Search Title or Manager Email"
-                            className="input input-bordered w-full pl-10"
+                            placeholder="Search Title or Email"
+                            className="input input-bordered w-full pl-10 focus:input-primary"
                             value={searchTerm}
                             onChange={(e) => setSearchTerm(e.target.value)}
                         />
@@ -104,7 +104,7 @@ const AdminAllLoans = () => {
                     
                     <div className="relative w-full sm:w-48">
                         <select 
-                            className="select select-bordered w-full pl-10"
+                            className="select select-bordered w-full pl-10 focus:select-primary"
                             value={filterCategory}
                             onChange={(e) => setFilterCategory(e.target.value)}
                         >
@@ -122,7 +122,7 @@ const AdminAllLoans = () => {
                 <span className="text-sm font-semibold opacity-70">Showing {filteredLoans.length} of {loans.length} loans</span>
             </div>
 
-            <div className="overflow-x-auto">
+            <div className="hidden lg:block overflow-x-auto">
                 <table className="table table-zebra w-full align-middle">
                     <thead className="bg-base-200 text-base-content text-sm uppercase">
                         <tr>
@@ -185,6 +185,13 @@ const AdminAllLoans = () => {
                                     <td className="text-center">
                                         <div className="flex justify-center gap-2">
                                             <Link 
+                                                to={`/loan-details/${loan._id}`}
+                                                className="btn btn-sm btn-circle btn-ghost text-green-600 tooltip"
+                                                data-tip="View Details"
+                                            >
+                                                <FaEye className="w-5 h-5" />
+                                            </Link>
+                                            <Link 
                                                 to={`/dashboard/update-loan/${loan._id}`}
                                                 className="btn btn-sm btn-circle btn-ghost text-blue-600 tooltip"
                                                 data-tip="Update Info"
@@ -211,6 +218,72 @@ const AdminAllLoans = () => {
                         )}
                     </tbody>
                 </table>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4 lg:hidden">
+                {filteredLoans.length > 0 ? (
+                    filteredLoans.map((loan) => (
+                        <div key={loan._id} className="card bg-base-100 border border-base-200 shadow-sm p-4">
+                            <div className="flex justify-between items-start mb-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="avatar">
+                                        <div className="w-12 h-12 rounded-xl">
+                                            <img src={loan.loanImage || loan.image} alt={loan.title} />
+                                        </div>
+                                    </div>
+                                    <div>
+                                        <h3 className="font-bold text-base">{loan.title}</h3>
+                                        <span className="text-xs badge badge-ghost badge-sm">{loan.category}</span>
+                                    </div>
+                                </div>
+                                <div className="font-bold text-orange-500">{loan.interestRate}%</div>
+                            </div>
+                            
+                            <div className="bg-base-200/50 p-3 rounded-lg mb-3 text-sm space-y-1">
+                                <div className="flex justify-between">
+                                    <span className="opacity-70">Manager:</span>
+                                    <span className="truncate w-32 text-right">{loan.managerEmail}</span>
+                                </div>
+                                <div className="flex justify-between items-center">
+                                    <span className="opacity-70">Show on Home:</span>
+                                    <label className="cursor-pointer label p-0">
+                                        <input 
+                                            type="checkbox" 
+                                            className="toggle toggle-success toggle-xs" 
+                                            checked={loan.showOnHome || false}
+                                            onChange={() => handleToggleHome(loan._id, loan.showOnHome)}
+                                        />
+                                    </label>
+                                </div>
+                            </div>
+
+                            <div className="flex justify-end gap-2">
+                                <Link 
+                                    to={`/loan-details/${loan._id}`}
+                                    className="btn btn-sm btn-ghost text-green-600"
+                                >
+                                    <FaEye />
+                                </Link>
+                                <Link 
+                                    to={`/dashboard/update-loan/${loan._id}`}
+                                    className="btn btn-sm btn-ghost text-blue-600"
+                                >
+                                    <FaEdit />
+                                </Link>
+                                <button 
+                                    onClick={() => handleDelete(loan._id)}
+                                    className="btn btn-sm btn-ghost text-red-600"
+                                >
+                                    <FaTrash />
+                                </button>
+                            </div>
+                        </div>
+                    ))
+                ) : (
+                    <div className="text-center py-10 text-gray-500">
+                        No loans match your search criteria.
+                    </div>
+                )}
             </div>
         </div>
     );

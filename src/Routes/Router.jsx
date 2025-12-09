@@ -23,6 +23,11 @@ import ApprovedLoans from "../Pages/Dashbord/ManagerHome/ApprovedLoans/ApprovedL
 import ManageUsers from "../Pages/Dashbord/AdminHome/ManageUsers/ManageUsers";
 import AdminAllLoans from "../Pages/Dashbord/AdminHome/AdminAllLoans/AdminAllLoans";
 import LoanApplications from "../Pages/Dashbord/AdminHome/LoanApplications/LoanApplications";
+import ManagerRoute from "./ManagerRoute";
+import AdminRoute from "./AdminRoute";
+import BorrowerRoute from "./BorrowerRoute";
+import PrivateRoute from "./PrivateRoute";
+
 
 export const Router = createBrowserRouter([
   {
@@ -55,73 +60,133 @@ export const Router = createBrowserRouter([
       },
       {
         path: "/loan-details/:id",
-        element: <LoanDetails />,
+        element: (
+          <PrivateRoute>
+            <LoanDetails />
+          </PrivateRoute>
+        ),
       },
       {
         path: "/loan-application",
-        element: <LoanApplication />,
+        element: (
+          <PrivateRoute>
+            <LoanApplication />
+          </PrivateRoute>
+        ),
       },
     ],
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         index: true,
         element: <DashboardNavigate />,
       },
       {
-        path: "manager-home",
-        element: <ManagerHome />,
-      },
-      {
-        path: "admin-home",
-        element: <AdminHome />,
-      },
-      {
-        path: "user-home",
-        element: <UserHome />,
-      },
-      {
-        path: "add-loan",
-        element: <AddLoan />,
-      },
-      {
-        path: "manage-loans",
-        element: <MangeLoan />,
-      },
-      {
         path: "profile",
         element: <MyProfile />,
       },
       {
-        path: "update-loan/:id",
-        element: <UpdateLoan />,
+        path: "manager-home",
+        element: (
+          <ManagerRoute>
+            <ManagerHome />
+          </ManagerRoute>
+        ),
       },
       {
-        path: "my-loans",
-        element: <MyLoans />,
+        path: "admin-home",
+        element: (
+          <AdminRoute>
+            <AdminHome />
+          </AdminRoute>
+        ),
+      },
+      {
+        path: "user-home",
+        element: (
+          <BorrowerRoute>
+            <UserHome />
+          </BorrowerRoute>
+        ),
+      },
+      {
+        path: "add-loan",
+        element: (
+          <ManagerRoute>
+            <AddLoan />
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "manage-loans",
+        element: (
+          <ManagerRoute>
+            <MangeLoan />
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "update-loan/:id",
+        element: (
+          <ManagerRoute>
+            <UpdateLoan />
+          </ManagerRoute>
+        ),
       },
       {
         path: "pending-loans",
-        element: <PendingLoans />,
+        element: (
+          <ManagerRoute>
+            <PendingLoans />
+          </ManagerRoute>
+        ),
       },
       {
         path: "approved-loans",
-        element: <ApprovedLoans />,
+        element: (
+          <ManagerRoute>
+            <ApprovedLoans />
+          </ManagerRoute>
+        ),
+      },
+      {
+        path: "my-loans",
+        element: (
+          <BorrowerRoute>
+            <MyLoans />
+          </BorrowerRoute>
+        ),
       },
       {
         path: "manage-users",
-        element: <ManageUsers />,
+        element: (
+          <AdminRoute>
+            <ManageUsers />
+          </AdminRoute>
+        ),
       },
       {
         path: "all-loans",
-        element: <AdminAllLoans />,
+        element: (
+          <AdminRoute>
+            <AdminAllLoans />
+          </AdminRoute>
+        ),
       },
       {
         path: "loan-applications",
-        element: <LoanApplications />,
+        element: (
+          <AdminRoute>
+            <LoanApplications />
+          </AdminRoute>
+        ),
       },
     ],
   },

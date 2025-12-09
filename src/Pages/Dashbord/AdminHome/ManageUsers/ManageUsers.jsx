@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Swal from 'sweetalert2';
-import { FaSearch, FaUserShield, FaUserTie, FaBan, FaCheckCircle, FaUser } from 'react-icons/fa';
+import { FaSearch, FaUserShield, FaUserTie, FaBan, FaCheckCircle, FaUser, FaUserAlt } from 'react-icons/fa';
 import toast from 'react-hot-toast';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
 
@@ -10,7 +10,6 @@ const ManageUsers = () => {
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState("");
 
-    // 1. Fetch Users Data
     const fetchUsers = async () => {
         try {
             const res = await axiosSecure.get(`/users?search=${searchTerm}`);
@@ -26,11 +25,10 @@ const ManageUsers = () => {
         fetchUsers();
     }, [searchTerm, axiosSecure]);
 
-    // 2. Handle Role Update
     const handleRoleUpdate = (user, newRole) => {
         Swal.fire({
             title: `Make ${newRole}?`,
-            text: `Do you want to promote ${user.name} to ${newRole}?`,
+            text: `Do you want to change role of ${user.name} to ${newRole}?`,
             icon: 'question',
             showCancelButton: true,
             confirmButtonText: 'Yes, update it!'
@@ -40,7 +38,7 @@ const ManageUsers = () => {
                     const res = await axiosSecure.patch(`/users/admin/${user._id}`, { role: newRole });
                     if (res.data.modifiedCount > 0) {
                         toast.success(`${user.name} is now a ${newRole}!`);
-                        fetchUsers(); // Refresh data
+                        fetchUsers();
                     }
                 } catch (error) {
                     toast.error("Failed to update role");
@@ -49,10 +47,8 @@ const ManageUsers = () => {
         });
     };
 
-    // 3. Handle Suspend User (Challenge Requirement)
     const handleSuspendUser = (user) => {
         if (user.status === 'suspended') {
-            // Activate Logic
             axiosSecure.patch(`/users/admin/${user._id}`, { status: 'active' })
                 .then(() => {
                     toast.success("User activated successfully!");
@@ -61,7 +57,6 @@ const ManageUsers = () => {
             return;
         }
 
-        // Suspend Logic with Input
         Swal.fire({
             title: 'Suspend User',
             input: 'textarea',
@@ -104,9 +99,8 @@ const ManageUsers = () => {
     return (
         <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
             
-            {/* Header & Search */}
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
-                <div>
+                <div className="w-full md:w-auto">
                     <h2 className="text-3xl font-bold text-primary">Manage Users</h2>
                     <p className="text-base-content/60">Total Users: {users.length}</p>
                 </div>
@@ -121,8 +115,7 @@ const ManageUsers = () => {
                 </div>
             </div>
 
-            {/* Table */}
-            <div className="overflow-x-auto">
+            <div className="hidden md:block overflow-x-auto">
                 <table className="table table-zebra w-full align-middle">
                     <thead className="bg-base-200 text-base-content text-sm uppercase">
                         <tr>
@@ -165,8 +158,15 @@ const ManageUsers = () => {
 
                                 <td className="text-center">
                                     <div className="flex justify-center items-center gap-2">
-                                        {/* Promote Buttons */}
                                         <div className="join">
+                                            <button 
+                                                onClick={() => handleRoleUpdate(user, 'borrower')}
+                                                disabled={user.role === 'borrower'}
+                                                className="btn btn-xs join-item btn-outline"
+                                                title="Make User"
+                                            >
+                                                <FaUser />
+                                            </button>
                                             <button 
                                                 onClick={() => handleRoleUpdate(user, 'manager')}
                                                 disabled={user.role === 'manager'}
@@ -185,7 +185,6 @@ const ManageUsers = () => {
                                             </button>
                                         </div>
 
-                                        {/* Suspend/Activate Button */}
                                         <button 
                                             onClick={() => handleSuspendUser(user)}
                                             className={`btn btn-sm btn-circle ${user.status === 'suspended' ? 'btn-success text-white' : 'btn-error text-white'}`}
@@ -199,6 +198,64 @@ const ManageUsers = () => {
                         ))}
                     </tbody>
                 </table>
+            </div>
+
+            <div className="md:hidden grid grid-cols-1 gap-4">
+                {users.map((user) => (
+                    <div key={user._id} className={`card bg-base-100 border shadow-sm p-4 ${user.status === 'suspended' ? 'border-red-300 bg-red-50' : 'border-base-200'}`}>
+                        <div className="flex justify-between items-start mb-3">
+                            <div className="flex items-center gap-3">
+                                <div className="avatar">
+                                    <div className="w-10 rounded-full">
+                                        <img src={user.photoURL || "https://i.ibb.co/5GzXkwq/user.png"} alt="User" />
+                                    </div>
+                                </div>
+                                <div>
+                                    <h3 className="font-bold text-sm">{user.name}</h3>
+                                    <p className="text-xs text-base-content/60 break-all">{user.email}</p>
+                                </div>
+                            </div>
+                            <div className={`badge text-xs ${user.status === 'suspended' ? 'badge-error text-white' : 'badge-success text-white'}`}>
+                                {user.status === 'suspended' ? 'Suspended' : 'Active'}
+                            </div>
+                        </div>
+
+                        <div className="flex justify-between items-center bg-base-200/50 p-2 rounded-lg mb-3">
+                            <span className="text-xs opacity-70">Current Role:</span>
+                            <span className="text-xs font-bold uppercase">{user.role}</span>
+                        </div>
+
+                        <div className="grid grid-cols-4 gap-2">
+                            <button 
+                                onClick={() => handleRoleUpdate(user, 'borrower')}
+                                disabled={user.role === 'borrower'}
+                                className="btn btn-sm btn-outline"
+                            >
+                                <FaUser />
+                            </button>
+                            <button 
+                                onClick={() => handleRoleUpdate(user, 'manager')}
+                                disabled={user.role === 'manager'}
+                                className="btn btn-sm btn-outline btn-secondary"
+                            >
+                                <FaUserTie />
+                            </button>
+                            <button 
+                                onClick={() => handleRoleUpdate(user, 'admin')}
+                                disabled={user.role === 'admin'}
+                                className="btn btn-sm btn-outline btn-primary"
+                            >
+                                <FaUserShield />
+                            </button>
+                            <button 
+                                onClick={() => handleSuspendUser(user)}
+                                className={`btn btn-sm ${user.status === 'suspended' ? 'btn-success text-white' : 'btn-error text-white'}`}
+                            >
+                                {user.status === 'suspended' ? <FaCheckCircle /> : <FaBan />}
+                            </button>
+                        </div>
+                    </div>
+                ))}
             </div>
         </div>
     );
