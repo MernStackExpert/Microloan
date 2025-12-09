@@ -27,7 +27,7 @@ import ManagerRoute from "./ManagerRoute";
 import AdminRoute from "./AdminRoute";
 import BorrowerRoute from "./BorrowerRoute";
 import PrivateRoute from "./PrivateRoute";
-
+import Payment from "../Pages/Dashbord/Payment/Payment";
 
 export const Router = createBrowserRouter([
   {
@@ -187,6 +187,10 @@ export const Router = createBrowserRouter([
             <LoanApplications />
           </AdminRoute>
         ),
+      },
+      {
+        path: "payment",
+        element: <Payment />,
       },
     ],
   },
