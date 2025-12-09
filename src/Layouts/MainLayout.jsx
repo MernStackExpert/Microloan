@@ -1,12 +1,12 @@
 import { Outlet } from "react-router";
-import Navbar from "../components/Navbar";
 import Footer from "../components/Footer";
+import AppNavbar from "../Components/AppNavbar";
 
 const MainLayout = () => {
   return (
     <div className="min-h-screen flex flex-col">
       {/* Navbar */}
-      <Navbar />
+      <AppNavbar/>
 
       {/* Dynamic Content */}
       <main className="flex-1 container mx-auto px-4 py-6">

@@ -4,7 +4,7 @@ import { FiMenu, FiX, FiSun, FiMoon, FiLogOut, FiZap } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import { AuthContext } from "../Provider/AuthContext";
 
-const Navbar = () => {
+const AppNavbar = () => {
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
   const { user, signOutUser } = useContext(AuthContext);
@@ -135,4 +135,4 @@ const Navbar = () => {
   );
 };
 
-export default Navbar;
+export default AppNavbar;
