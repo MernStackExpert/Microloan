@@ -10,10 +10,13 @@ import {
 } from "firebase/auth";
 import { auth } from "../Firebase/firebase.config";
 import { AuthContext } from "./AuthContext";
+import useAxiosSecure from "../Hooks/useAxiosSecure";
 
 const googleProvider = new GoogleAuthProvider();
 
 const AuthProvider = ({ children }) => {
+
+  const AxiosSecure = useAxiosSecure()
   const [user, setUser] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -47,28 +50,56 @@ const AuthProvider = ({ children }) => {
   };
 
   // Observe user state
+  // useEffect(() => {
+  //   const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+  //     setUser(currentUser);
+  //     console.log("Current User:", currentUser);
+
+  //     // JWT Token logic can be added here later
+  //     /*
+  //     if (currentUser) {
+  //       axios.post('http://localhost:5000/jwt', { email: currentUser.email })
+  //       .then(res => {
+  //         // store token
+  //       });
+  //     } else {
+  //       // remove token
+  //     }
+  //     */
+
+  //     setLoading(false);
+  //   });
+
+  //   return () => unsubscribe();
+  // }, []);
+
   useEffect(() => {
-    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
-      setUser(currentUser);
-      console.log("Current User:", currentUser);
-
-      // JWT Token logic can be added here later
-      /*
-      if (currentUser) {
-        axios.post('http://localhost:5000/jwt', { email: currentUser.email })
-        .then(res => {
-          // store token
-        });
-      } else {
-        // remove token
-      }
-      */
-
-      setLoading(false);
+    const unsubscribe = onAuthStateChanged(auth, currentUser => {
+        setUser(currentUser);
+        console.log('CurrentUser-->', currentUser);
+        
+        if (currentUser) {
+            // get token and store client
+            const userInfo = { email: currentUser.email };
+            AxiosSecure.post('http://localhost:3000/jwt', userInfo, { withCredentials: true })
+                .then(res => {
+                    if (res.data.success) {
+                        setLoading(false);
+                    }
+                })
+        } else {
+            // remove token (if user stored in the client side)
+            AxiosSecure.post('http://localhost:3000/logout', {}, { withCredentials: true })
+                .then(res => {
+                    setLoading(false);
+                })
+        }
+        
     });
-
-    return () => unsubscribe();
-  }, []);
+    return () => {
+        return unsubscribe();
+    }
+}, [AxiosSecure])
 
   const authInfo = {
     user,
@@ -91,3 +122,4 @@ const AuthProvider = ({ children }) => {
 };
 
 export default AuthProvider;
+ 

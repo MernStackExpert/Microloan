@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
-import { FaEye, FaFilter, FaSearch, FaFileInvoiceDollar, FaUser } from 'react-icons/fa';
+import { FaEye, FaFilter, FaSearch, FaFileInvoiceDollar, FaUser, FaCheck, FaTimes } from 'react-icons/fa';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
+import toast from 'react-hot-toast';
+import Swal from 'sweetalert2';
 
 const LoanApplications = () => {
     const axiosSecure = useAxiosSecure();
@@ -11,18 +13,19 @@ const LoanApplications = () => {
     const [searchTerm, setSearchTerm] = useState('');
     const [selectedApp, setSelectedApp] = useState(null);
 
+    const fetchApplications = async () => {
+        try {
+            const res = await axiosSecure.get('/applications');
+            setApplications(res.data);
+            setFilteredApps(res.data);
+            setLoading(false);
+        } catch (error) {
+            console.error(error);
+            setLoading(false);
+        }
+    };
+
     useEffect(() => {
-        const fetchApplications = async () => {
-            try {
-                const res = await axiosSecure.get('/applications');
-                setApplications(res.data);
-                setFilteredApps(res.data);
-                setLoading(false);
-            } catch (error) {
-                console.error(error);
-                setLoading(false);
-            }
-        };
         fetchApplications();
     }, [axiosSecure]);
 
@@ -48,6 +51,31 @@ const LoanApplications = () => {
         document.getElementById('admin_app_details_modal').showModal();
     };
 
+    const handleStatusUpdate = (id, newStatus) => {
+        Swal.fire({
+            title: `Are you sure?`,
+            text: `You are about to ${newStatus} this application.`,
+            icon: newStatus === 'approved' ? 'success' : 'warning',
+            showCancelButton: true,
+            confirmButtonColor: newStatus === 'approved' ? '#36D399' : '#F87272',
+            cancelButtonColor: '#3085d6',
+            confirmButtonText: `Yes, ${newStatus} it!`
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const res = await axiosSecure.patch(`/applications/status/${id}`, { status: newStatus });
+                    
+                    if (res.data.modifiedCount > 0) {
+                        toast.success(`Application ${newStatus} successfully!`);
+                        fetchApplications();
+                    }
+                } catch (error) {
+                    toast.error("Failed to update status");
+                }
+            }
+        });
+    };
+
     if (loading) {
         return <div className="text-center mt-20"><span className="loading loading-bars loading-lg text-primary"></span></div>;
     }
@@ -58,7 +86,7 @@ const LoanApplications = () => {
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div className="w-full md:w-auto">
                     <h2 className="text-3xl font-bold text-primary">Loan Applications</h2>
-                    <p className="text-base-content/60">Monitor all loan requests.</p>
+                    <p className="text-base-content/60">Monitor and manage all loan requests.</p>
                 </div>
 
                 <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
@@ -98,7 +126,7 @@ const LoanApplications = () => {
                             <th>Category</th>
                             <th>Amount</th>
                             <th>Status</th>
-                            <th className="text-center">Action</th>
+                            <th className="text-center">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -132,12 +160,34 @@ const LoanApplications = () => {
                                         </div>
                                     </td>
                                     <td className="text-center">
-                                        <button 
-                                            onClick={() => handleViewDetails(app)}
-                                            className="btn btn-sm btn-ghost text-blue-600"
-                                        >
-                                            <FaEye className="w-5 h-5" />
-                                        </button>
+                                        <div className="flex justify-center gap-2">
+                                            <button 
+                                                onClick={() => handleViewDetails(app)}
+                                                className="btn btn-sm btn-ghost text-blue-600 tooltip"
+                                                data-tip="View Details"
+                                            >
+                                                <FaEye className="w-5 h-5" />
+                                            </button>
+                                            
+                                            {app.status === 'pending' && (
+                                                <>
+                                                    <button 
+                                                        onClick={() => handleStatusUpdate(app._id, 'approved')}
+                                                        className="btn btn-sm btn-success text-white tooltip"
+                                                        data-tip="Approve"
+                                                    >
+                                                        <FaCheck />
+                                                    </button>
+                                                    <button 
+                                                        onClick={() => handleStatusUpdate(app._id, 'rejected')}
+                                                        className="btn btn-sm btn-error text-white tooltip"
+                                                        data-tip="Reject"
+                                                    >
+                                                        <FaTimes />
+                                                    </button>
+                                                </>
+                                            )}
+                                        </div>
                                     </td>
                                 </tr>
                             ))
@@ -183,12 +233,34 @@ const LoanApplications = () => {
                                 </div>
                             </div>
 
-                            <button 
-                                onClick={() => handleViewDetails(app)}
-                                className="btn btn-sm btn-outline btn-primary w-full"
-                            >
-                                <FaEye /> View Details
-                            </button>
+                            <div className="grid grid-cols-3 gap-2">
+                                <button 
+                                    onClick={() => handleViewDetails(app)}
+                                    className="btn btn-sm btn-outline btn-primary w-full"
+                                >
+                                    <FaEye />
+                                </button>
+                                {app.status === 'pending' ? (
+                                    <>
+                                        <button 
+                                            onClick={() => handleStatusUpdate(app._id, 'approved')}
+                                            className="btn btn-sm btn-success text-white w-full"
+                                        >
+                                            <FaCheck />
+                                        </button>
+                                        <button 
+                                            onClick={() => handleStatusUpdate(app._id, 'rejected')}
+                                            className="btn btn-sm btn-error text-white w-full"
+                                        >
+                                            <FaTimes />
+                                        </button>
+                                    </>
+                                ) : (
+                                    <div className="col-span-2 flex items-center justify-center text-xs opacity-50 bg-base-200 rounded">
+                                        Action Taken
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     ))
                 ) : (
@@ -229,8 +301,6 @@ const LoanApplications = () => {
                                     </div>
                                 </div>
                             </div>
-
-                            
 
                             <div className="bg-base-200 p-4 rounded-xl">
                                 <h4 className="font-bold text-lg mb-2">Address & Reason</h4>
