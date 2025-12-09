@@ -28,6 +28,7 @@ import AdminRoute from "./AdminRoute";
 import BorrowerRoute from "./BorrowerRoute";
 import PrivateRoute from "./PrivateRoute";
 import Payment from "../Pages/Dashbord/Payment/Payment";
+import PaymentHistory from "../Pages/Dashbord/UserHome/PaymentHistory/PaymentHistory";
 
 export const Router = createBrowserRouter([
   {
@@ -191,6 +192,14 @@ export const Router = createBrowserRouter([
       {
         path: "payment",
         element: <Payment />,
+      },
+      {
+        path: "payment-history",
+        element: (
+          <BorrowerRoute>
+            <PaymentHistory />
+          </BorrowerRoute>
+        ),
       },
     ],
   },

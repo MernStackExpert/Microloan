@@ -5,17 +5,15 @@ import toast from 'react-hot-toast';
 import { AuthContext } from '../../Provider/AuthContext';
 import useAxiosSecure from '../../Hooks/useAxiosSecure';
 
-
 const LoanApplication = () => {
     const { state } = useLocation();
     const { user } = useContext(AuthContext);
     const axiosSecure = useAxiosSecure();
     const navigate = useNavigate();
-    const { loan } = state || {}; // Get loan data passed from Details page
+    const { loan } = state || {};
 
     const { register, handleSubmit, formState: { errors } } = useForm();
 
-    // Redirect if no loan data found (e.g. direct link access)
     useEffect(() => {
         if (!loan) {
             navigate('/all-loans');
@@ -32,7 +30,6 @@ const LoanApplication = () => {
             category: loan.category,
             interestRate: loan.interestRate,
             
-            // Applicant Info
             email: user?.email,
             applicantName: `${data.firstName} ${data.lastName}`,
             phone: data.phone,
@@ -43,7 +40,6 @@ const LoanApplication = () => {
             loanAmount: parseFloat(data.loanAmount),
             reason: data.reason,
             
-            // System Fields
             status: "pending",
             feeStatus: "unpaid",
             createdAt: new Date().toISOString()
@@ -72,7 +68,6 @@ const LoanApplication = () => {
 
                     <form onSubmit={handleSubmit(onSubmit)} className="space-y-4">
                         
-                        {/* READ ONLY SECTION */}
                         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 bg-base-200 p-4 rounded-xl mb-4">
                             <div>
                                 <label className="label"><span className="label-text font-bold">Loan Category</span></label>
@@ -88,7 +83,6 @@ const LoanApplication = () => {
                             </div>
                         </div>
 
-                        {/* USER INPUTS */}
                         <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                             <div className="form-control">
                                 <label className="label"><span className="label-text font-semibold">First Name</span></label>

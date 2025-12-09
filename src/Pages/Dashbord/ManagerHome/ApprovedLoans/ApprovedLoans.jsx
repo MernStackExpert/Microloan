@@ -3,7 +3,6 @@ import {
   FaUser,
   FaEye,
   FaCheckCircle,
-  FaMoneyBillWave,
   FaCalendarCheck,
 } from "react-icons/fa";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
@@ -228,6 +227,23 @@ const ApprovedLoans = () => {
                     ? new Date(selectedApp.approvedAt).toDateString()
                     : "N/A"}
                 </p>
+              </div>
+
+              <div className="divider">Payment Info</div>
+              <div className="flex justify-between items-center bg-base-200 p-3 rounded-lg">
+                <span className="opacity-70">Application Fee:</span>
+                {selectedApp.feeStatus === "paid" ? (
+                  <div className="text-right">
+                    <span className="badge badge-success text-white font-bold">
+                      PAID
+                    </span>
+                    <p className="text-[10px] opacity-70 mt-1">
+                      TrxID: {selectedApp.transactionId}
+                    </p>
+                  </div>
+                ) : (
+                  <span className="badge badge-warning">UNPAID</span>
+                )}
               </div>
             </div>
           )}

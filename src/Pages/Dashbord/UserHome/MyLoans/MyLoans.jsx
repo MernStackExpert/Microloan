@@ -7,6 +7,8 @@ import {
   FaCheckCircle,
   FaHourglassStart,
   FaTimesCircle,
+  FaSearch,
+  FaFilter,
 } from "react-icons/fa";
 import { AuthContext } from "../../../../Provider/AuthContext";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
@@ -17,8 +19,11 @@ const MyLoans = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
   const [applications, setApplications] = useState([]);
+  const [filteredApps, setFilteredApps] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedLoan, setSelectedLoan] = useState(null);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [filterStatus, setFilterStatus] = useState("all");
 
   useEffect(() => {
     if (user?.email) {
@@ -26,6 +31,7 @@ const MyLoans = () => {
         .get(`/applications/${user.email}`)
         .then((res) => {
           setApplications(res.data);
+          setFilteredApps(res.data);
           setLoading(false);
         })
         .catch((err) => {
@@ -34,6 +40,22 @@ const MyLoans = () => {
         });
     }
   }, [user?.email, axiosSecure]);
+
+  useEffect(() => {
+    let result = applications;
+
+    if (filterStatus !== "all") {
+      result = result.filter((app) => app.status === filterStatus);
+    }
+
+    if (searchTerm) {
+      result = result.filter((app) =>
+        app.loanTitle.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    }
+
+    setFilteredApps(result);
+  }, [filterStatus, searchTerm, applications]);
 
   const handleCancel = (id) => {
     Swal.fire({
@@ -69,6 +91,10 @@ const MyLoans = () => {
     document.getElementById("loan_details_modal").showModal();
   };
 
+  const handlePay = (app) => {
+    navigate("/dashboard/payment", { state: { application: app } });
+  };
+
   if (loading) {
     return (
       <div className="text-center mt-20">
@@ -77,15 +103,41 @@ const MyLoans = () => {
     );
   }
 
-  const handlePay = (app) => {
-    navigate("/dashboard/payment", { state: { application: app } });
-  };
-
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
-      <h2 className="text-3xl font-bold text-primary mb-6 text-center md:text-left">
-        My Loan Applications
-      </h2>
+      <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+        <div>
+          <h2 className="text-3xl font-bold text-primary">My Loan Applications</h2>
+          <p className="text-base-content/60">Track your current requests.</p>
+        </div>
+
+        <div className="flex flex-col sm:flex-row gap-3 w-full md:w-auto">
+          <div className="relative w-full sm:w-64">
+            <input
+              type="text"
+              placeholder="Search by Loan Title..."
+              className="input input-bordered w-full pl-10 focus:input-primary"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
+            <FaSearch className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+
+          <div className="relative w-full sm:w-48">
+            <select
+              className="select select-bordered w-full pl-10 focus:select-primary"
+              value={filterStatus}
+              onChange={(e) => setFilterStatus(e.target.value)}
+            >
+              <option value="all">All Status</option>
+              <option value="pending">Pending</option>
+              <option value="approved">Approved</option>
+              <option value="rejected">Rejected</option>
+            </select>
+            <FaFilter className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" />
+          </div>
+        </div>
+      </div>
 
       <div className="hidden md:block overflow-x-auto">
         <table className="table table-zebra w-full">
@@ -100,8 +152,8 @@ const MyLoans = () => {
             </tr>
           </thead>
           <tbody>
-            {applications.length > 0 ? (
-              applications.map((app, index) => (
+            {filteredApps.length > 0 ? (
+              filteredApps.map((app, index) => (
                 <tr key={app._id}>
                   <th>{index + 1}</th>
                   <td>
@@ -139,7 +191,7 @@ const MyLoans = () => {
                       </span>
                     ) : (
                       <button
-                        onClick={() => handlePay(app)} // এখানে ফাংশন কল করো
+                        onClick={() => handlePay(app)}
                         className="btn btn-xs btn-outline btn-accent gap-1"
                       >
                         <FaCreditCard /> Pay Fee
@@ -171,7 +223,7 @@ const MyLoans = () => {
             ) : (
               <tr>
                 <td colSpan="6" className="text-center py-10 text-gray-500">
-                  You have no loan applications yet.
+                  No applications found.
                 </td>
               </tr>
             )}
@@ -180,8 +232,8 @@ const MyLoans = () => {
       </div>
 
       <div className="md:hidden grid grid-cols-1 gap-4">
-        {applications.length > 0 ? (
-          applications.map((app, index) => (
+        {filteredApps.length > 0 ? (
+          filteredApps.map((app) => (
             <div
               key={app._id}
               className="card bg-base-100 border border-base-200 shadow-sm p-4"
@@ -225,7 +277,10 @@ const MyLoans = () => {
                       Fee Paid
                     </span>
                   ) : (
-                    <button className="btn btn-xs btn-outline btn-accent gap-1">
+                    <button
+                      onClick={() => handlePay(app)}
+                      className="btn btn-xs btn-outline btn-accent gap-1"
+                    >
                       <FaCreditCard /> Pay Fee
                     </button>
                   )}
@@ -254,7 +309,7 @@ const MyLoans = () => {
           ))
         ) : (
           <div className="text-center py-10 text-gray-500">
-            You have no loan applications yet.
+            No applications found.
           </div>
         )}
       </div>

@@ -18,7 +18,7 @@ const CheckoutForm = ({ application }) => {
     // Fixed Fee: $10
     const price = 10;
 
-    useEffect(() => {
+    useEffect(() => { 
         if (price > 0) {
             axiosSecure.post('/create-payment-intent', { price })
                 .then(res => {
