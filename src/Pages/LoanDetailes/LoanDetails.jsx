@@ -55,7 +55,12 @@ const LoanDetails = () => {
   }
 
   if (!loan) {
-    return <div className="text-center mt-20 text-2xl text-error">Loan Not Found</div>;
+    return <div className="text-center mt-25 space-y-5">
+      <h1 className="font-bold text-4xl text-error">OOPS Loan Not Found</h1>
+      <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300">
+          <FaArrowLeft /> Browse  All Loans
+        </Link>
+    </div>;
   }
 
   const isDisabled = role === "admin" || role === "manager";

@@ -29,11 +29,13 @@ import BorrowerRoute from "./BorrowerRoute";
 import PrivateRoute from "./PrivateRoute";
 import Payment from "../Pages/Dashbord/Payment/Payment";
 import PaymentHistory from "../Pages/Dashbord/UserHome/PaymentHistory/PaymentHistory";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 
 export const Router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
+    errorElement: <ErrorPage/>,
     children: [
       {
         path: "/",
@@ -200,6 +202,10 @@ export const Router = createBrowserRouter([
             <PaymentHistory />
           </BorrowerRoute>
         ),
+      },
+      {
+        path: "*",
+        element: <ErrorPage />,
       },
     ],
   },
