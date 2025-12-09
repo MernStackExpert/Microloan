@@ -28,7 +28,7 @@ const Contact = () => {
   });
 
   const onSubmit = (data) => {
-    console.log("Contact Form:", data);
+    // console.log("Contact Form:", data);
     toast.success("Thank you! Your message has been sent successfully. We'll reply soon!", {
       duration: 5000,
       icon: "✉️",
