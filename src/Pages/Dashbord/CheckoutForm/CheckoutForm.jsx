@@ -4,6 +4,7 @@ import toast from 'react-hot-toast';
 import { useNavigate } from 'react-router';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import { AuthContext } from '../../../Provider/AuthContext';
+import PageTitle from '../../../Components/PageTitle';
 
 const CheckoutForm = ({ application }) => {
     const stripe = useStripe();
@@ -93,6 +94,8 @@ const CheckoutForm = ({ application }) => {
     return (
         <form onSubmit={handleSubmit}>
             <div className="border p-4 rounded-lg bg-base-100">
+                    <PageTitle title="Check-Out" />
+
                 <CardElement
                     options={{
                         style: {

@@ -3,6 +3,7 @@ import { FaEye, FaFilter, FaSearch, FaFileInvoiceDollar, FaUser, FaCheck, FaTime
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
 import toast from 'react-hot-toast';
 import Swal from 'sweetalert2';
+import PageTitle from '../../../../Components/PageTitle';
 
 const LoanApplications = () => {
     const axiosSecure = useAxiosSecure();
@@ -82,6 +83,8 @@ const LoanApplications = () => {
 
     return (
         <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+
+            <PageTitle title="Loan Application" />
             
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div className="w-full md:w-auto">

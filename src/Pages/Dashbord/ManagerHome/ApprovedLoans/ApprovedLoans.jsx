@@ -1,11 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  FaUser,
-  FaEye,
-  FaCheckCircle,
-  FaCalendarCheck,
-} from "react-icons/fa";
+import { FaUser, FaEye, FaCheckCircle, FaCalendarCheck } from "react-icons/fa";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import PageTitle from "../../../../Components/PageTitle";
 
 const ApprovedLoans = () => {
   const axiosSecure = useAxiosSecure();
@@ -42,6 +38,8 @@ const ApprovedLoans = () => {
 
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+      <PageTitle title="Approved Loan" />
+
       <div className="flex items-center gap-3 mb-6">
         <FaCheckCircle className="text-3xl text-success" />
         <div>

@@ -5,6 +5,7 @@ import axios from 'axios';
 import { FaUserCircle, FaEnvelope, FaCalendarAlt, FaClock, FaSignOutAlt, FaUserEdit, FaCloudUploadAlt, FaLink } from 'react-icons/fa';
 import { AuthContext } from '../../../Provider/AuthContext';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import PageTitle from '../../../Components/PageTitle';
 
 const MyProfile = () => {
   const AxiosSecure = useAxiosSecure();
@@ -74,6 +75,8 @@ const MyProfile = () => {
 
   return (
     <div className="flex justify-center items-center min-h-[calc(100vh-100px)] px-4 py-8">
+            <PageTitle title="My-Profile" />
+
       <div className="card w-full max-w-3xl bg-base-100 shadow-2xl border border-base-200">
         
         <div className="h-48 bg-gradient-to-r from-primary to-secondary rounded-t-2xl relative">

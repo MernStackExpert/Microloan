@@ -1,10 +1,14 @@
 import React from 'react';
 import { Link } from 'react-router';
 import { FaHome, FaExclamationTriangle } from 'react-icons/fa';
+import PageTitle from '../../Components/PageTitle';
 
 const ErrorPage = () => {
     return (
         <div className="min-h-screen flex flex-col items-center justify-center bg-base-200 text-center p-6">
+
+                <PageTitle title="Error-Page" />
+
             <div className="text-primary mb-4">
                 <FaExclamationTriangle className="text-8xl opacity-80 mx-auto" />
             </div>

@@ -10,6 +10,7 @@ import {
 } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import PageTitle from "../../../../Components/PageTitle";
 
 const PendingLoans = () => {
   const axiosSecure = useAxiosSecure();
@@ -78,6 +79,7 @@ const PendingLoans = () => {
 
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+      <PageTitle title="Pending Loans" />
       <h2 className="text-3xl font-bold text-primary mb-2">
         Pending Applications
       </h2>

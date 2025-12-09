@@ -13,6 +13,7 @@ import {
 import { AuthContext } from "../../../../Provider/AuthContext";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
 import { useNavigate } from "react-router";
+import PageTitle from "../../../../Components/PageTitle";
 
 const MyLoans = () => {
   const { user } = useContext(AuthContext);
@@ -105,6 +106,7 @@ const MyLoans = () => {
 
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+        <PageTitle title="My-Loans" />
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-3xl font-bold text-primary">My Loan Applications</h2>

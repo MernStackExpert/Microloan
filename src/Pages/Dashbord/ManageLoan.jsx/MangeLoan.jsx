@@ -4,6 +4,7 @@ import Swal from "sweetalert2";
 import { FaEdit, FaTrash, FaSearch, FaDollarSign, FaPercent, FaEye } from "react-icons/fa";
 import useAxiosSecure from "../../../Hooks/useAxiosSecure";
 import { AuthContext } from "../../../Provider/AuthContext";
+import PageTitle from "../../../Components/PageTitle";
 
 const ManageLoans = () => {
   const axiosSecure = useAxiosSecure();
@@ -72,6 +73,8 @@ const ManageLoans = () => {
 
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+            <PageTitle title="Manage-Loan" />
+
       <div className="flex flex-col md:flex-row justify-between items-center mb-8 gap-4">
         <div className="text-center md:text-left">
           <h2 className="text-3xl font-bold text-primary">Manage Loans</h2>

@@ -3,6 +3,7 @@ import { useParams, useNavigate } from 'react-router';
 import { useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import PageTitle from '../../../Components/PageTitle';
 
 
 const UpdateLoan = () => {
@@ -83,6 +84,8 @@ const UpdateLoan = () => {
 
     return (
         <div className="w-full max-w-4xl mx-auto bg-base-100 shadow-xl rounded-2xl p-4 md:p-8 border border-base-200">
+                  <PageTitle title="Update-Loan" />
+
             <h2 className="text-3xl font-bold text-center text-primary mb-8">Update Loan Offer</h2>
             
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">

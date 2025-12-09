@@ -3,6 +3,7 @@ import { useLocation } from 'react-router';
 import { loadStripe } from '@stripe/stripe-js';
 import { Elements } from '@stripe/react-stripe-js';
 import CheckoutForm from '../CheckoutForm/CheckoutForm';
+import PageTitle from '../../../Components/PageTitle';
 
 // Add Publishable Key from .env
 const stripePromise = loadStripe(import.meta.env.VITE_PAYMENT_GATEWAY_PK);
@@ -15,6 +16,8 @@ const Payment = () => {
 
     return (
         <div className="w-full max-w-3xl mx-auto bg-base-100 shadow-xl rounded-2xl p-8 border border-base-200 mt-10">
+                <PageTitle title="Payment" />
+
             <h2 className="text-3xl font-bold text-primary mb-2">Payment</h2>
             <p className="text-base-content/60 mb-8">Please pay the application fee to process your loan request.</p>
             

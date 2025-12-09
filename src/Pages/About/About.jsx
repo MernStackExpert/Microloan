@@ -3,6 +3,7 @@ import React from 'react';
 import { motion } from 'framer-motion';
 import { FaHandHoldingUsd, FaShieldAlt, FaChartLine, FaQuoteLeft } from 'react-icons/fa';
 import { Link } from 'react-router';
+import PageTitle from '../../Components/PageTitle';
 
 const About = () => {
   const fadeInUp = {
@@ -20,6 +21,7 @@ const About = () => {
 
   return (
     <div className="min-h-screen bg-base-100 text-base-content">
+      <PageTitle title="About" />
       {/* Hero Section */}
       <section className="relative py-24 lg:py-32 overflow-hidden bg-gradient-to-br from-primary/10 via-secondary/5 to-accent/10">
         <div className="absolute inset-0 bg-grid-slate-100 dark:bg-grid-slate-800 opacity-40"></div>

@@ -61,6 +61,8 @@ const LoanApplication = () => {
 
     return (
         <div className="min-h-screen bg-base-200 py-10 px-4 flex justify-center items-center">
+                  <PageTitle title="Loan-Application" />
+
             <div className="card w-full max-w-4xl bg-base-100 shadow-2xl border border-base-300">
                 <div className="card-body p-8">
                     <h2 className="text-3xl font-bold text-center text-primary mb-2">Loan Application Form</h2>

@@ -4,6 +4,7 @@ import axios from "axios";
 import { FaCheckCircle, FaDollarSign, FaPercent, FaArrowLeft, FaMoneyCheckAlt } from "react-icons/fa";
 import { AuthContext } from "../../Provider/AuthContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import PageTitle from "../../Components/PageTitle";
 
 
 const LoanDetails = () => {
@@ -17,9 +18,10 @@ const LoanDetails = () => {
   const [role, setRole] = useState(null);
 
   useEffect(() => {
+    
     const fetchLoanData = async () => {
       try {
-        const res = await axios.get(`http://localhost:3000/loans/${id}`);
+        const res = await axiosSecure.get(`/loans/${id}`);
         setLoan(res.data);
         setLoading(false);
       } catch (error) {
@@ -67,6 +69,8 @@ const LoanDetails = () => {
 
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4 md:px-10">
+            <PageTitle title={loan.title} />
+
       <div className="max-w-6xl mx-auto">
         
         <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300">

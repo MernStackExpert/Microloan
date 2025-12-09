@@ -4,6 +4,7 @@ import Swal from 'sweetalert2';
 import toast from 'react-hot-toast';
 import { FaEdit, FaTrash, FaUserTie, FaSearch, FaFilter, FaEye } from 'react-icons/fa';
 import useAxiosSecure from '../../../../Hooks/useAxiosSecure';
+import PageTitle from '../../../../Components/PageTitle';
 
 const AdminAllLoans = () => {
     const axiosSecure = useAxiosSecure();
@@ -84,6 +85,7 @@ const AdminAllLoans = () => {
 
     return (
         <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
+            <PageTitle title="Admin All-Loans" />
             <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div className="w-full md:w-auto">
                     <h2 className="text-3xl font-bold text-primary">All System Loans</h2>

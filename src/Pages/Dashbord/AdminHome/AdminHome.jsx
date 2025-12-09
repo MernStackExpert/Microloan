@@ -3,6 +3,7 @@ import { AuthContext } from '../../../Provider/AuthContext';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import AdminStats from './AdminStats/AdminStats';
 import AdminCharts from './AdminCharts/AdminCharts';
+import PageTitle from '../../../Components/PageTitle';
 
 const AdminHome = () => {
     const { user } = useContext(AuthContext);
@@ -33,6 +34,7 @@ const AdminHome = () => {
 
     return (
         <div className="space-y-8">
+            <PageTitle title="Admin Home" />
             <div>
                 <h2 className="text-3xl font-bold text-primary">Admin Dashboard</h2>
                 <p className="text-base-content/60">System wide overview and analytics.</p>

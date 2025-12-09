@@ -5,6 +5,7 @@ import toast from 'react-hot-toast';
 import axios from 'axios';
 import { AuthContext } from '../../../Provider/AuthContext';
 import useAxiosSecure from '../../../Hooks/useAxiosSecure';
+import PageTitle from '../../../Components/PageTitle';
 const AddLoan = () => {
   const axiosSecure = useAxiosSecure()
   const { user } = useContext(AuthContext);
@@ -90,6 +91,8 @@ const AddLoan = () => {
 
   return (
     <div className="min-h-screen bg-base-200 py-10 px-4">
+            <PageTitle title="Add-Loan" />
+
       <div className="max-w-5xl mx-auto">
         {/* Header */}
         <div className="text-center mb-10">

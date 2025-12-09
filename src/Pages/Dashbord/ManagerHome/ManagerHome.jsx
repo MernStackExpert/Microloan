@@ -4,6 +4,7 @@ import useAxiosSecure from '../../../Hooks/useAxiosSecure';
 import ManagerCharts from './ManagerCharts/ManagerCharts';
 import RecentApplications from './RecentApplications/RecentApplications';
 import ManagerStats from './ManagerStats/ManagerStats';
+import PageTitle from '../../../Components/PageTitle';
 
 const ManagerHome = () => {
     const { user } = useContext(AuthContext);
@@ -39,6 +40,7 @@ const ManagerHome = () => {
     return (
         <div className="space-y-8">
             <div>
+                <PageTitle title="Manager Home" />
                 <h2 className="text-3xl font-bold text-primary">Welcome Back, {user?.displayName}!</h2>
                 <p className="text-base-content/60">Here's an overview of your loan portfolio.</p>
             </div>

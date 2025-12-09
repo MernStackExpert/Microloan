@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { Link } from "react-router";
 import { motion } from "framer-motion";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import PageTitle from "../../Components/PageTitle";
 
 const AllLoans = () => {
   const axiosSecure = useAxiosSecure();
@@ -74,6 +75,8 @@ const AllLoans = () => {
 
   return (
     <section className="py-16 bg-base-200">
+            <PageTitle title="All-Loans" />
+      
       <div className="container mx-auto px-6 lg:px-12">
         <div className="text-center mb-12">
           <h2 className="text-4xl md:text-5xl font-extrabold text-base-content">

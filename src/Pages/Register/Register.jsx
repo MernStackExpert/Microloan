@@ -15,6 +15,7 @@ import {
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../../Provider/AuthContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
+import PageTitle from "../../Components/PageTitle";
 
 const Register = () => {
   const navigate = useNavigate();
@@ -99,6 +100,10 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 px-4 py-12">
+
+                    <PageTitle title="Register" />
+
+      
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-0 rounded-3xl shadow-2xl overflow-hidden bg-base-100">
         <div className="relative flex items-center justify-center p-8 lg:p-16">
           <div className="w-full max-w-md space-y-8">

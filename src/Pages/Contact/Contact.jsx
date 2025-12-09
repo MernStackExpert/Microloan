@@ -15,6 +15,7 @@ import {
   FaGithub 
 } from "react-icons/fa";
 import { AuthContext } from "../../Provider/AuthContext";
+import PageTitle from "../../Components/PageTitle";
 
 const Contact = () => {
   const { user } = useContext(AuthContext);
@@ -42,6 +43,8 @@ const Contact = () => {
 
   return (
     <div className="min-h-screen bg-base-100 py-16">
+            <PageTitle title="Contact" />
+
       {/* Hero Section */}
       <section className="bg-primary text-white py-20">
         <motion.div 
