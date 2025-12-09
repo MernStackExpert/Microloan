@@ -50,7 +50,7 @@ const AuthProvider = ({ children }) => {
       if (currentUser) {
         axios
           .post(
-            "http://localhost:3000/jwt",
+            "https://microloan-backend.vercel.app/jwt",
             { email: currentUser.email },
             { withCredentials: true }
           )
@@ -62,7 +62,7 @@ const AuthProvider = ({ children }) => {
       } else {
         axios
           .post(
-            "http://localhost:3000/logout",
+            "https://microloan-backend.vercel.app/logout",
             {},
             { withCredentials: true }
           )
