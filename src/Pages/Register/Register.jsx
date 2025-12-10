@@ -11,6 +11,8 @@ import {
   MdWorkOutline,
   MdCloudUpload,
   MdLink,
+  MdVisibility,
+  MdVisibilityOff,
 } from "react-icons/md";
 import { FcGoogle } from "react-icons/fc";
 import { AuthContext } from "../../Provider/AuthContext";
@@ -23,6 +25,8 @@ const Register = () => {
   const { createUser, updateUserProfile, signInWithGoogle } =
     useContext(AuthContext);
   const [photoType, setPhotoType] = useState("url");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
   const {
     register,
@@ -60,14 +64,12 @@ const Register = () => {
         role,
         photoURL: finalPhoto,
       };
-      await axiosSecure.post("/users", currentUser).then((res) => {
-        console.log(res);
-      });
+      await axiosSecure.post("/users", currentUser);
 
       toast.success("Registration Successful!", { id: toastId });
       navigate("/");
     } catch (error) {
-      toast.error(error.message || "Registration failed.", { id: toastId });
+      toast.error( "Registration failed. Plese Try Again", { id: toastId });
     }
   };
 
@@ -79,12 +81,11 @@ const Register = () => {
           displayName: user.displayName,
           email: user.email,
           photoURL: user.photoURL,
-          role: "borrower"
+          role: "borrower",
         };
         axiosSecure
           .post("/users", currentUser)
-          .then((res) => {
-            console.log("User saved to DB:", res.data);
+          .then(() => {
             toast.success("Google Registration Successful!");
             navigate("/");
           })
@@ -100,10 +101,8 @@ const Register = () => {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-base-200 via-base-100 to-base-200 px-4 py-12">
+      <PageTitle title="Register" />
 
-                    <PageTitle title="Register" />
-
-      
       <div className="w-full max-w-6xl grid lg:grid-cols-2 gap-0 rounded-3xl shadow-2xl overflow-hidden bg-base-100">
         <div className="relative flex items-center justify-center p-8 lg:p-16">
           <div className="w-full max-w-md space-y-8">
@@ -147,6 +146,11 @@ const Register = () => {
                     }`}
                     {...register("name", { required: "Name is required" })}
                   />
+                  {errors.name && (
+                    <span className="text-error text-xs mt-1 block">
+                      {errors.name.message}
+                    </span>
+                  )}
                 </div>
 
                 <div className="relative">
@@ -159,6 +163,11 @@ const Register = () => {
                     }`}
                     {...register("email", { required: "Email is required" })}
                   />
+                  {errors.email && (
+                    <span className="text-error text-xs mt-1 block">
+                      {errors.email.message}
+                    </span>
+                  )}
                 </div>
               </div>
 
@@ -197,61 +206,100 @@ const Register = () => {
                     <input
                       type="url"
                       placeholder="https://example.com/photo.jpg"
-                      className="input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100"
+                      className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 ${
+                        errors.photoURL ? "input-error" : ""
+                      }`}
                       {...register("photoURL", {
                         required: photoType === "url" && "Photo URL required",
                       })}
                     />
+                    {errors.photoURL && (
+                      <span className="text-error text-xs mt-1 block">
+                        {errors.photoURL.message}
+                      </span>
+                    )}
                   </div>
                 )}
 
                 {photoType === "file" && (
-                  <input
-                    type="file"
-                    accept="image/*"
-                    className="file-input file-input-bordered w-full rounded-xl bg-base-200/50"
-                    {...register("imageFile", {
-                      required:
-                        photoType === "file" && "Please upload an image",
-                    })}
-                  />
+                  <div>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      className={`file-input file-input-bordered w-full rounded-xl bg-base-200/50 ${
+                        errors.imageFile ? "file-input-error" : ""
+                      }`}
+                      {...register("imageFile", {
+                        required:
+                          photoType === "file" && "Please upload an image",
+                      })}
+                    />
+                    {errors.imageFile && (
+                      <span className="text-error text-xs mt-1 block">
+                        {errors.imageFile.message}
+                      </span>
+                    )}
+                  </div>
                 )}
               </div>
 
               <div className="relative">
                 <MdWorkOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 z-10" />
                 <select
-                  className="select select-bordered w-full pl-12 rounded-xl h-14 bg-base-200 backdrop-blur-sm focus:bg-base-100"
+                  className={`select select-bordered w-full pl-12 rounded-xl h-14 bg-base-200 backdrop-blur-sm focus:bg-base-100 ${
+                    errors.role ? "select-error" : ""
+                  }`}
                   {...register("role", { required: "Please select a role" })}
                 >
-                  <option value="">Choose your role</option>
                   <option value="borrower">Borrower (User)</option>
                   <option value="manager">Manager (Loan Officer)</option>
                 </select>
+                {errors.role && (
+                  <span className="text-error text-xs mt-1 block">
+                    {errors.role.message}
+                  </span>
+                )}
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="relative">
                   <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
                   <input
-                    type="password"
+                    type={showPassword ? "text" : "password"}
                     placeholder="Password"
-                    className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
+                    className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
                       errors.password ? "input-error" : ""
                     }`}
                     {...register("password", {
                       required: "Password required",
                       minLength: { value: 6, message: "Min 6 characters" },
+                      pattern: {
+                        value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
+                        message:
+                          "Must contain Uppercase, Lowercase & min 6 chars",
+                      },
                     })}
                   />
+                  <button
+                    type="button"
+                    className="absolute right-4 top-1/2 z-50 -translate-y-1/2 text-xl text-base-content/50 cursor-pointer"
+                    onClick={() => setShowPassword(!showPassword)}
+                  >
+                    {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                  </button>
+                  {errors.password && (
+                    <span className="text-error text-xs mt-1 block">
+                      {errors.password.message}
+                    </span>
+                  )}
                 </div>
 
                 <div className="relative">
                   <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
                   <input
-                    type="password"
+                    type={showConfirmPassword ? "text" : "password"}
                     placeholder="Confirm Password"
-                    className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
+                    className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
                       errors.confirmPassword ? "input-error" : ""
                     }`}
                     {...register("confirmPassword", {
@@ -260,12 +308,28 @@ const Register = () => {
                         v === password || "Passwords don't match",
                     })}
                   />
+                  <button
+                    type="button"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 cursor-pointer"
+                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    {showConfirmPassword ? (
+                      <MdVisibility />
+                    ) : (
+                      <MdVisibilityOff />
+                    )}
+                  </button>
+                  {errors.confirmPassword && (
+                    <span className="text-error text-xs mt-1 block">
+                      {errors.confirmPassword.message}
+                    </span>
+                  )}
                 </div>
               </div>
 
               <button
                 type="submit"
-                className="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 shadow-xl"
+                className="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 shadow-xl cursor-pointer"
               >
                 Create Account
               </button>
@@ -286,8 +350,8 @@ const Register = () => {
         <div className="hidden lg:block relative overflow-hidden bg-gradient-to-br from-primary to-secondary">
           <div className="absolute inset-0 bg-black/20"></div>
           <img
-            src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2070&auto=format&fit=crop"
-            alt="Financial growth"
+            src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop"
+            alt="Secure login"
             className="w-full h-full object-cover mix-blend-overlay"
           />
           <div className="absolute bottom-0 left-0 right-0 p-16 text-white">

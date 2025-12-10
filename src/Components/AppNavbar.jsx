@@ -48,7 +48,7 @@ const AppNavbar = () => {
 
           <Link to="/" className="flex items-center gap-3 group">
             <div className="relative p-2 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl shadow-2xl shadow-indigo-500/30 group-hover:scale-110 transition-all duration-300">
-              <FiZap className="w-7 h-7 text-white rotate-12" />
+              <FiZap  className="w-7 h-7 text-white rotate-12" />
               <div className="absolute inset-0 rounded-2xl bg-white/20 blur-xl"></div>
             </div>
             <div className="hidden sm:block">

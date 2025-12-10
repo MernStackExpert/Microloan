@@ -187,11 +187,12 @@ const Contact = () => {
             <div className="card bg-primary text-white p-8 rounded-3xl shadow-2xl">
               <h3 className="text-xl font-bold mb-6 text-center">Follow Us</h3>
               <div className="flex justify-center gap-6 text-3xl">
-                <a href="https://www.facebook.com/nirob" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaFacebookF /></a>
-                <a href="https://twitter.com/nirob" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaTwitter /></a>
-                <a href="https://www.linkedin.com/in/nirob" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaLinkedinIn /></a>
-                <a href="https://github.com/nirob" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaGithub /></a>
-                <a href="https://www.instagram.com/nirob" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaInstagram /></a>
+                <a href="https://www.facebook.com/MernStackExpert" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaFacebookF /></a>
+
+                <a href="https://www.linkedin.com/in/mdnirobsarkar/" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaLinkedinIn /></a>
+
+                <a href="https://github.com/MernStackExpert" target="_blank" rel="noreferrer" className="hover:scale-125 transition-transform"><FaGithub /></a>
+
               </div>
             </div>
           </motion.div>

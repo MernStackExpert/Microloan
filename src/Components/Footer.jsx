@@ -1,5 +1,6 @@
 import React from "react";
 import { FaFacebookF, FaTwitter, FaLinkedinIn, FaInstagram, FaGithub } from "react-icons/fa";
+import { FiZap } from "react-icons/fi";
 import { Link } from "react-router";
 
 const Footer = () => {
@@ -7,16 +8,27 @@ const Footer = () => {
     <footer className="bg-base-100 border-t border-base-300 py-16">
       <div className="container mx-auto px-6 lg:px-12 grid md:grid-cols-3 gap-12">
         <div>
-          <h3 className="text-2xl font-bold text-primary mb-4">LoanLink</h3>
+                    <Link to="/" className="flex items-center gap-3 group mb-2">
+                      <div className="relative p-2 bg-gradient-to-br from-violet-600 to-indigo-600 rounded-2xl shadow-2xl shadow-indigo-500/30 group-hover:scale-110 transition-all duration-300">
+                        <FiZap  className="w-7 h-7 text-white rotate-12" />
+                        <div className="absolute inset-0 rounded-2xl bg-white/20 blur-xl"></div>
+                      </div>
+                      <div className="hidden sm:block">
+                        <h1 className="text-2xl font-black bg-gradient-to-r from-violet-600 to-indigo-600 bg-clip-text text-transparent">
+                          LoanLink
+                        </h1>
+                        <p className="text-xs text-base-content/60 -mt-1 tracking-widest">MICRO FINANCE</p>
+                      </div>
+                    </Link>
           <p className="text-base-content/70">
             Fast and reliable loan services to help you grow. Trusted by thousands of borrowers nationwide.
           </p>
           <div className="flex gap-4 mt-6 text-xl">
-            <a href="https://facebook.com/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaFacebookF /></a>
-            <a href="https://twitter.com/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaTwitter /></a>
-            <a href="https://linkedin.com/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaLinkedinIn /></a>
-            <a href="https://instagram.com/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaInstagram /></a>
-            <a href="https://github.com/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaGithub /></a>
+            <a href="https://www.facebook.com/MernStackExpert" target="_blank" rel="noreferrer" className="hover:text-primary"><FaFacebookF /></a>
+         
+            <a href="https://www.linkedin.com/in/mdnirobsarkar/" target="_blank" rel="noreferrer" className="hover:text-primary"><FaLinkedinIn /></a>
+       
+            <a href="https://github.com/MernStackExpert" target="_blank" rel="noreferrer" className="hover:text-primary"><FaGithub /></a>
           </div>
         </div>
 
@@ -27,7 +39,7 @@ const Footer = () => {
             <li><Link to="/all-loans" className="hover:text-primary">All Loans</Link></li>
             <li><Link to="/about" className="hover:text-primary">About Us</Link></li>
             <li><Link to="/contact" className="hover:text-primary">Contact</Link></li>
-            <li><Link to="/faq" className="hover:text-primary">FAQ</Link></li>
+           
           </ul>
         </div>
 

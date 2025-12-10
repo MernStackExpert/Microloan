@@ -26,13 +26,56 @@ const MyLoans = () => {
   const [searchTerm, setSearchTerm] = useState("");
   const [filterStatus, setFilterStatus] = useState("all");
 
+  const calculateTimeLeft = (createdAt) => {
+    const creationTime = new Date(createdAt).getTime();
+    const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+    const deadline = creationTime + threeDaysInMs;
+    const now = new Date().getTime();
+    const difference = deadline - now;
+
+    if (difference <= 0) return null;
+
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24));
+    const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+    
+    if (days > 0) return `${days}d ${hours}h`;
+    return `${hours}h left`;
+  };
+
   useEffect(() => {
     if (user?.email) {
       axiosSecure
         .get(`/applications/${user.email}`)
-        .then((res) => {
-          setApplications(res.data);
-          setFilteredApps(res.data);
+        .then(async (res) => {
+          const threeDaysInMs = 3 * 24 * 60 * 60 * 1000;
+          const now = new Date().getTime();
+          
+          const validApps = [];
+          const deletePromises = [];
+
+          res.data.forEach(app => {
+            if (app.status === 'rejected') {
+              const creationTime = new Date(app.createdAt).getTime();
+              if (now - creationTime > threeDaysInMs) {
+                deletePromises.push(axiosSecure.delete(`/applications/${app._id}`));
+              } else {
+                validApps.push(app);
+              }
+            } else {
+              validApps.push(app);
+            }
+          });
+
+          await Promise.all(deletePromises);
+
+          const sortedApps = validApps.sort((a, b) => {
+            if (a.status === 'rejected' && b.status !== 'rejected') return 1;
+            if (a.status !== 'rejected' && b.status === 'rejected') return -1;
+            return new Date(b.createdAt) - new Date(a.createdAt);
+          });
+
+          setApplications(sortedApps);
+          setFilteredApps(sortedApps);
           setLoading(false);
         })
         .catch((err) => {
@@ -58,15 +101,17 @@ const MyLoans = () => {
     setFilteredApps(result);
   }, [filterStatus, searchTerm, applications]);
 
-  const handleCancel = (id) => {
+  const handleDelete = (id, status) => {
+    const actionText = status === "pending" ? "Cancel" : "Delete";
+    
     Swal.fire({
       title: "Are you sure?",
-      text: "You want to cancel this application?",
+      text: `You want to ${actionText.toLowerCase()} this application?`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-      confirmButtonText: "Yes, cancel it!",
+      confirmButtonText: `Yes, ${actionText} it!`,
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure
@@ -74,15 +119,15 @@ const MyLoans = () => {
           .then((res) => {
             if (res.data.deletedCount > 0) {
               Swal.fire(
-                "Cancelled!",
-                "Your application has been cancelled.",
+                `${actionText}ed!`,
+                `Application has been ${actionText.toLowerCase()}ed.`,
                 "success"
               );
               const remaining = applications.filter((app) => app._id !== id);
               setApplications(remaining);
             }
           })
-          .catch((err) => Swal.fire("Error", "Failed to cancel", "error"));
+          .catch((err) => Swal.fire("Error", "Failed to remove", "error"));
       }
     });
   };
@@ -106,7 +151,7 @@ const MyLoans = () => {
 
   return (
     <div className="w-full bg-base-100 shadow-xl rounded-2xl p-4 md:p-6 border border-base-200">
-        <PageTitle title="My-Loans" />
+      <PageTitle title="My-Loans" />
       <div className="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
         <div>
           <h2 className="text-3xl font-bold text-primary">My Loan Applications</h2>
@@ -195,6 +240,7 @@ const MyLoans = () => {
                       <button
                         onClick={() => handlePay(app)}
                         className="btn btn-xs btn-outline btn-accent gap-1"
+                        disabled={app.status === "rejected"} 
                       >
                         <FaCreditCard /> Pay Fee
                       </button>
@@ -209,13 +255,24 @@ const MyLoans = () => {
                       >
                         <FaEye className="w-5 h-5" />
                       </button>
+                      
                       {app.status === "pending" && (
                         <button
-                          onClick={() => handleCancel(app._id)}
+                          onClick={() => handleDelete(app._id, "pending")}
                           className="btn btn-sm btn-circle btn-ghost text-red-600 tooltip"
                           data-tip="Cancel Application"
                         >
                           <FaTrashAlt className="w-5 h-5" />
+                        </button>
+                      )}
+
+                      {app.status === "rejected" && (
+                        <button
+                          onClick={() => handleDelete(app._id, "rejected")}
+                          className="btn btn-sm btn-error text-white tooltip w-32"
+                          data-tip="Auto delete in 3 days"
+                        >
+                           {calculateTimeLeft(app.createdAt)} <FaTrashAlt className="ml-1 w-3 h-3" />
                         </button>
                       )}
                     </div>
@@ -282,6 +339,7 @@ const MyLoans = () => {
                     <button
                       onClick={() => handlePay(app)}
                       className="btn btn-xs btn-outline btn-accent gap-1"
+                      disabled={app.status === "rejected"}
                     >
                       <FaCreditCard /> Pay Fee
                     </button>
@@ -298,12 +356,22 @@ const MyLoans = () => {
                 >
                   <FaEye /> Details
                 </button>
+                
                 {app.status === "pending" && (
                   <button
-                    onClick={() => handleCancel(app._id)}
+                    onClick={() => handleDelete(app._id, "pending")}
                     className="btn btn-sm btn-ghost text-red-600 gap-1"
                   >
                     <FaTrashAlt /> Cancel
+                  </button>
+                )}
+
+                {app.status === "rejected" && (
+                  <button
+                    onClick={() => handleDelete(app._id, "rejected")}
+                    className="btn btn-sm btn-error text-white gap-1"
+                  >
+                    {calculateTimeLeft(app.createdAt)} <FaTrashAlt />
                   </button>
                 )}
               </div>

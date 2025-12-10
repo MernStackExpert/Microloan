@@ -38,7 +38,7 @@ const ManageUsers = () => {
                 try {
                     const res = await axiosSecure.patch(`/users/admin/${user._id}`, { role: newRole });
                     if (res.data.modifiedCount > 0) {
-                        toast.success(`${user.name} is now a ${newRole}!`);
+                        toast.success(`${user.displayName} is now a ${newRole}!`);
                         fetchUsers();
                     }
                 } catch (error) {

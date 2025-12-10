@@ -179,7 +179,7 @@ const AdminAllLoans = () => {
                                                 onChange={() => handleToggleHome(loan._id, loan.showOnHome)}
                                             />
                                         </label>
-                                        <span className="text-[10px] opacity-60">
+                                        <span className="text-[10px] opacity-60 ml-2">
                                             {loan.showOnHome ? "Visible" : "Hidden"}
                                         </span>
                                     </td>

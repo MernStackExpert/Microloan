@@ -30,6 +30,7 @@ import PrivateRoute from "./PrivateRoute";
 import Payment from "../Pages/Dashbord/Payment/Payment";
 import PaymentHistory from "../Pages/Dashbord/UserHome/PaymentHistory/PaymentHistory";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import AdminManagerRoute from "./AdminManagerRoute";
 
 export const Router = createBrowserRouter([
   {
@@ -138,9 +139,9 @@ export const Router = createBrowserRouter([
       {
         path: "update-loan/:id",
         element: (
-          <ManagerRoute>
+          <AdminManagerRoute>
             <UpdateLoan />
-          </ManagerRoute>
+          </AdminManagerRoute>
         ),
       },
       {
