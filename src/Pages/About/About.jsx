@@ -73,7 +73,7 @@ const About = () => {
             >
               <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-base-300">
                 <img 
-                  src="https://images.unsplash.com/photo-1556742049-0cfed4f7a07d?q=80&w=2070"
+                  src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ3hPVMMI9fxZ7PpnMCFq2ksxjMvo2tYhlNDA&s"
                   alt="Financial Freedom"
                   className="w-full h-[500px] object-cover hover:scale-110 transition-transform duration-1000"
                 />

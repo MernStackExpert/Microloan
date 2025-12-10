@@ -5,9 +5,9 @@
 ---
 
 ## 🔗 Live Links
-- **Live Site:** [LIVE LINK]
-- **Client Repository:** [CLIENT LINK]
-- **Server Repository:** [SERVER LINK]
+- **Live Site:** [https://micro-loan.netlify.app/]
+- **Client Repository:** [https://github.com/MernStackExpert/Microloan.git]
+- **Server Repository:** [https://github.com/MernStackExpert/Microloan-Backend.git]
 
 ---
 
@@ -16,8 +16,8 @@ To explore the Admin and Manager dashboards, please use the following credential
 
 | Role | Email | Password |
 | :--- | :--- | :--- |
-| **Admin** | `[admin@email.com]` | `[admin123]` |
-| **Manager** | `[manager@email.com]` | `[manager123]` |
+| **Admin** | `[admin@loanlink.com]` | `[1234Nn]` |
+| **Manager** | `[manager@loanlink.com]` | `[1234Nn]` |
 
 ---
 
