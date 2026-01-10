@@ -22,8 +22,7 @@ import PageTitle from "../../Components/PageTitle";
 const Register = () => {
   const navigate = useNavigate();
   const axiosSecure = useAxiosSecure();
-  const { createUser, updateUserProfile, signInWithGoogle } =
-    useContext(AuthContext);
+  const { createUser, updateUserProfile, signInWithGoogle } = useContext(AuthContext);
   const [photoType, setPhotoType] = useState("url");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
@@ -69,7 +68,7 @@ const Register = () => {
       toast.success("Registration Successful!", { id: toastId });
       navigate("/");
     } catch (error) {
-      toast.error( "Registration failed. Plese Try Again", { id: toastId });
+      toast.error("Registration failed. Please try again.", { id: toastId });
     }
   };
 
@@ -83,20 +82,14 @@ const Register = () => {
           photoURL: user.photoURL,
           role: "borrower",
         };
-        axiosSecure
-          .post("/users", currentUser)
+        axiosSecure.post("/users", currentUser)
           .then(() => {
             toast.success("Google Registration Successful!");
             navigate("/");
           })
-          .catch((err) => {
-            console.error(err);
-            toast.error("Failed to save user to DB");
-          });
+          .catch(() => toast.error("Failed to save user info"));
       })
-      .catch((error) => {
-        toast.error(error.message);
-      });
+      .catch((error) => toast.error(error.message));
   };
 
   return (
@@ -110,14 +103,12 @@ const Register = () => {
               <h2 className="text-4xl font-black bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent">
                 Create Account
               </h2>
-              <p className="mt-3 text-base-content/70 text-lg">
-                Join LoanLink and unlock financial freedom
-              </p>
+              <p className="mt-3 text-base-content/70 text-lg">Join LoanLink and unlock financial freedom</p>
             </div>
 
             <button
               onClick={handleGoogleRegister}
-              className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-base-200/60 backdrop-blur-md border border-base-300 hover:bg-base-300 transition-all duration-300 hover:scale-[1.02] shadow-lg"
+              className="w-full flex items-center justify-center gap-4 py-4 rounded-2xl bg-base-200/60 backdrop-blur-md border border-base-300 hover:bg-base-300 transition-all shadow-lg"
             >
               <FcGoogle className="text-2xl" />
               <span className="font-semibold">Continue with Google</span>
@@ -127,243 +118,140 @@ const Register = () => {
               <div className="absolute inset-0 flex items-center">
                 <div className="w-full border-t border-base-300"></div>
               </div>
-              <div className="relative flex justify-center">
-                <span className="px-6 bg-base-100 text-base-content/60 font-medium">
-                  Or use email
-                </span>
+              <div className="relative flex justify-center text-sm">
+                <span className="px-6 bg-base-100 text-base-content/60 font-medium italic">Or use email</span>
               </div>
             </div>
 
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+            <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="relative">
-                  <MdPersonOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
-                  <input
-                    type="text"
-                    placeholder="Full Name"
-                    className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
-                      errors.name ? "input-error" : ""
-                    }`}
-                    {...register("name", { required: "Name is required" })}
-                  />
-                  {errors.name && (
-                    <span className="text-error text-xs mt-1 block">
-                      {errors.name.message}
-                    </span>
-                  )}
-                </div>
-
-                <div className="relative">
-                  <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
-                  <input
-                    type="email"
-                    placeholder="Email Address"
-                    className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
-                      errors.email ? "input-error" : ""
-                    }`}
-                    {...register("email", { required: "Email is required" })}
-                  />
-                  {errors.email && (
-                    <span className="text-error text-xs mt-1 block">
-                      {errors.email.message}
-                    </span>
-                  )}
-                </div>
-              </div>
-
-              <div>
-                <label className="text-sm font-semibold text-base-content/80 mb-3 block">
-                  Profile Photo
-                </label>
-                <div className="flex gap-2 mb-4">
-                  <button
-                    type="button"
-                    onClick={() => setPhotoType("url")}
-                    className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                      photoType === "url"
-                        ? "bg-primary text-white shadow-lg"
-                        : "bg-base-200 hover:bg-base-300"
-                    }`}
-                  >
-                    <MdLink className="inline-block mr-2" /> URL
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setPhotoType("file")}
-                    className={`flex-1 py-3 rounded-xl font-medium transition-all ${
-                      photoType === "file"
-                        ? "bg-primary text-white shadow-lg"
-                        : "bg-base-200 hover:bg-base-300"
-                    }`}
-                  >
-                    <MdCloudUpload className="inline-block mr-2" /> Upload
-                  </button>
-                </div>
-
-                {photoType === "url" && (
+                {/* Name Field */}
+                <div className="space-y-1">
                   <div className="relative">
-                    <MdImage className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                    <MdPersonOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
                     <input
-                      type="url"
-                      placeholder="https://example.com/photo.jpg"
-                      className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 ${
-                        errors.photoURL ? "input-error" : ""
-                      }`}
-                      {...register("photoURL", {
-                        required: photoType === "url" && "Photo URL required",
-                      })}
+                      type="text"
+                      placeholder="Full Name"
+                      className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 ${errors.name ? "input-error" : ""}`}
+                      {...register("name", { required: "Full name is required" })}
                     />
-                    {errors.photoURL && (
-                      <span className="text-error text-xs mt-1 block">
-                        {errors.photoURL.message}
-                      </span>
-                    )}
                   </div>
-                )}
+                  {errors.name && <p className="text-error text-xs font-medium ml-2">{errors.name.message}</p>}
+                </div>
 
-                {photoType === "file" && (
-                  <div>
+                {/* Email Field */}
+                <div className="space-y-1">
+                  <div className="relative">
+                    <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
                     <input
-                      type="file"
-                      accept="image/*"
-                      className={`file-input file-input-bordered w-full rounded-xl bg-base-200/50 ${
-                        errors.imageFile ? "file-input-error" : ""
-                      }`}
-                      {...register("imageFile", {
-                        required:
-                          photoType === "file" && "Please upload an image",
+                      type="email"
+                      placeholder="Email Address"
+                      className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 ${errors.email ? "input-error" : ""}`}
+                      {...register("email", { 
+                        required: "Email is required",
+                        pattern: { value: /^[^\s@]+@[^\s@]+\.[^\s@]+$/, message: "Invalid email format" }
                       })}
                     />
-                    {errors.imageFile && (
-                      <span className="text-error text-xs mt-1 block">
-                        {errors.imageFile.message}
-                      </span>
-                    )}
+                  </div>
+                  {errors.email && <p className="text-error text-xs font-medium ml-2">{errors.email.message}</p>}
+                </div>
+              </div>
+
+              {/* Photo Section */}
+              <div className="space-y-3">
+                <label className="text-sm font-semibold text-base-content/80 ml-1">Profile Photo Source</label>
+                <div className="flex gap-2">
+                  <button type="button" onClick={() => setPhotoType("url")} className={`flex-1 py-3 rounded-xl transition-all ${photoType === "url" ? "bg-primary text-white" : "bg-base-200"}`}>URL</button>
+                  <button type="button" onClick={() => setPhotoType("file")} className={`flex-1 py-3 rounded-xl transition-all ${photoType === "file" ? "bg-primary text-white" : "bg-base-200"}`}>Upload</button>
+                </div>
+                
+                {photoType === "url" ? (
+                  <div className="space-y-1">
+                    <div className="relative">
+                      <MdImage className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                      <input type="url" placeholder="Photo URL" className={`input input-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 ${errors.photoURL ? "input-error" : ""}`} {...register("photoURL", { required: photoType === "url" && "Photo URL is required" })} />
+                    </div>
+                    {errors.photoURL && <p className="text-error text-xs font-medium ml-2">{errors.photoURL.message}</p>}
+                  </div>
+                ) : (
+                  <div className="space-y-1">
+                    <input type="file" className={`file-input file-input-bordered w-full rounded-xl bg-base-200/50 ${errors.imageFile ? "file-input-error" : ""}`} {...register("imageFile", { required: photoType === "file" && "Please upload an image" })} />
+                    {errors.imageFile && <p className="text-error text-xs font-medium ml-2">{errors.imageFile.message}</p>}
                   </div>
                 )}
               </div>
 
-              <div className="relative">
-                <MdWorkOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 z-10" />
-                <select
-                  className={`select select-bordered w-full pl-12 rounded-xl h-14 bg-base-200 backdrop-blur-sm focus:bg-base-100 ${
-                    errors.role ? "select-error" : ""
-                  }`}
-                  {...register("role", { required: "Please select a role" })}
-                >
-                  <option value="borrower">Borrower (User)</option>
-                  <option value="manager">Manager (Loan Officer)</option>
-                </select>
-                {errors.role && (
-                  <span className="text-error text-xs mt-1 block">
-                    {errors.role.message}
-                  </span>
-                )}
+              {/* Role Field */}
+              <div className="space-y-1">
+                <div className="relative">
+                  <MdWorkOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 z-10" />
+                  <select className={`select select-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 ${errors.role ? "select-error" : ""}`} {...register("role", { required: "Please select a role" })}>
+                    <option value="borrower">Borrower (User)</option>
+                    <option value="manager">Manager (Loan Officer)</option>
+                  </select>
+                </div>
+                {errors.role && <p className="text-error text-xs font-medium ml-2">{errors.role.message}</p>}
               </div>
 
+              {/* Password Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div className="relative">
-                  <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
-                  <input
-                    type={showPassword ? "text" : "password"}
-                    placeholder="Password"
-                    className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
-                      errors.password ? "input-error" : ""
-                    }`}
-                    {...register("password", {
-                      required: "Password required",
-                      minLength: { value: 6, message: "Min 6 characters" },
-                      pattern: {
-                        value: /^(?=.*[a-z])(?=.*[A-Z]).{6,}$/,
-                        message:
-                          "Must contain Uppercase, Lowercase & min 6 chars",
-                      },
-                    })}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-4 top-1/2 z-50 -translate-y-1/2 text-xl text-base-content/50 cursor-pointer"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
-                  </button>
-                  {errors.password && (
-                    <span className="text-error text-xs mt-1 block">
-                      {errors.password.message}
-                    </span>
-                  )}
+                <div className="space-y-1">
+                  <div className="relative">
+                    <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                    <input
+                      type={showPassword ? "text" : "password"}
+                      placeholder="Password"
+                      className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 ${errors.password ? "input-error" : ""}`}
+                      {...register("password", {
+                        required: "Password required",
+                        minLength: { value: 6, message: "Min 6 characters" },
+                        pattern: { value: /^(?=.*[a-z])(?=.*[A-Z]).+$/, message: "Must have Upper & Lowercase" }
+                      })}
+                    />
+                    <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                    </button>
+                  </div>
+                  {errors.password && <p className="text-error text-xs font-medium ml-2">{errors.password.message}</p>}
                 </div>
 
-                <div className="relative">
-                  <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
-                  <input
-                    type={showConfirmPassword ? "text" : "password"}
-                    placeholder="Confirm Password"
-                    className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 backdrop-blur-sm focus:bg-base-100 transition-all ${
-                      errors.confirmPassword ? "input-error" : ""
-                    }`}
-                    {...register("confirmPassword", {
-                      required: "Confirm password",
-                      validate: (v) =>
-                        v === password || "Passwords don't match",
-                    })}
-                  />
-                  <button
-                    type="button"
-                    className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 cursor-pointer"
-                    onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  >
-                    {showConfirmPassword ? (
-                      <MdVisibility />
-                    ) : (
-                      <MdVisibilityOff />
-                    )}
-                  </button>
-                  {errors.confirmPassword && (
-                    <span className="text-error text-xs mt-1 block">
-                      {errors.confirmPassword.message}
-                    </span>
-                  )}
+                <div className="space-y-1">
+                  <div className="relative">
+                    <MdLockOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
+                    <input
+                      type={showConfirmPassword ? "text" : "password"}
+                      placeholder="Confirm Password"
+                      className={`input input-bordered w-full pl-12 pr-10 rounded-xl h-14 bg-base-200/50 ${errors.confirmPassword ? "input-error" : ""}`}
+                      {...register("confirmPassword", {
+                        required: "Confirm password",
+                        validate: (v) => v === password || "Passwords don't match"
+                      })}
+                    />
+                    <button type="button" className="absolute right-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                      {showConfirmPassword ? <MdVisibility /> : <MdVisibilityOff />}
+                    </button>
+                  </div>
+                  {errors.confirmPassword && <p className="text-error text-xs font-medium ml-2">{errors.confirmPassword.message}</p>}
                 </div>
               </div>
 
-              <button
-                type="submit"
-                className="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-2xl hover:scale-[1.02] transition-all duration-300 shadow-xl cursor-pointer"
-              >
+              <button type="submit" className="w-full py-4 rounded-2xl font-bold text-white bg-gradient-to-r from-primary to-secondary hover:shadow-2xl transition-all shadow-xl cursor-pointer">
                 Create Account
               </button>
             </form>
 
             <p className="text-center text-base-content/70">
-              Already have an account?{" "}
-              <Link
-                to="/login"
-                className="font-bold text-primary hover:underline"
-              >
-                Sign in here
-              </Link>
+              Already have an account? <Link to="/login" className="font-bold text-primary hover:underline">Sign in here</Link>
             </p>
           </div>
         </div>
 
         <div className="hidden lg:block relative overflow-hidden bg-gradient-to-br from-primary to-secondary">
           <div className="absolute inset-0 bg-black/20"></div>
-          <img
-            src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop"
-            alt="Secure login"
-            className="w-full h-full object-cover mix-blend-overlay"
-          />
+          <img src="https://images.unsplash.com/photo-1579621970563-ebec7560ff3e?q=80&w=2071&auto=format&fit=crop" alt="Secure login" className="w-full h-full object-cover mix-blend-overlay" />
           <div className="absolute bottom-0 left-0 right-0 p-16 text-white">
-            <h1 className="text-5xl font-black mb-6 leading-tight">
-              Your Financial
-              <br />
-              Future Starts Here
-            </h1>
-            <p className="text-xl opacity-90 max-w-lg">
-              Join thousands who have already taken control of their financial
-              journey with LoanLink.
-            </p>
+            <h1 className="text-5xl font-black mb-6 leading-tight">Your Financial<br />Future Starts Here</h1>
+            <p className="text-xl opacity-90">Join thousands who have already taken control of their financial journey with LoanLink.</p>
           </div>
         </div>
       </div>

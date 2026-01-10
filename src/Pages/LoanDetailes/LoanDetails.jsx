@@ -1,28 +1,33 @@
 import React, { useEffect, useState, useContext } from "react";
 import { useParams, useNavigate, Link } from "react-router";
-import axios from "axios";
-import { FaCheckCircle, FaDollarSign, FaPercent, FaArrowLeft, FaMoneyCheckAlt } from "react-icons/fa";
+import { FaCheckCircle, FaDollarSign, FaPercent, FaArrowLeft, FaMoneyCheckAlt, FaInfoCircle, FaThList } from "react-icons/fa";
 import { AuthContext } from "../../Provider/AuthContext";
 import useAxiosSecure from "../../Hooks/useAxiosSecure";
 import PageTitle from "../../Components/PageTitle";
-
 
 const LoanDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
   const { user } = useContext(AuthContext);
   const axiosSecure = useAxiosSecure();
-  
+
   const [loan, setLoan] = useState(null);
+  const [relatedLoans, setRelatedLoans] = useState([]);
   const [loading, setLoading] = useState(true);
   const [role, setRole] = useState(null);
 
   useEffect(() => {
-    
     const fetchLoanData = async () => {
+      setLoading(true);
       try {
         const res = await axiosSecure.get(`/loans/${id}`);
         setLoan(res.data);
+        
+        // Related Loans Fetching (Requirement 4.4)
+        const allLoansRes = await axiosSecure.get('/loans');
+        const filtered = allLoansRes.data.filter(l => l.category === res.data.category && l._id !== id);
+        setRelatedLoans(filtered.slice(0, 3));
+        
         setLoading(false);
       } catch (error) {
         console.error("Error fetching loan details:", error);
@@ -30,7 +35,7 @@ const LoanDetails = () => {
       }
     };
     fetchLoanData();
-  }, [id]);
+  }, [id, axiosSecure]);
 
   useEffect(() => {
     if (user?.email) {
@@ -42,7 +47,7 @@ const LoanDetails = () => {
 
   const handleApply = () => {
     if (!user) {
-      navigate("/login", { state: { from: location.pathname } });
+      navigate("/login", { state: { from: window.location.pathname } });
       return;
     }
     navigate("/loan-application", { state: { loan } });
@@ -50,133 +55,141 @@ const LoanDetails = () => {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-screen">
+      <div className="flex justify-center items-center min-h-screen bg-base-100">
         <span className="loading loading-bars loading-lg text-primary"></span>
       </div>
     );
   }
 
-  if (!loan) {
-    return <div className="text-center mt-25 space-y-5">
-      <h1 className="font-bold text-4xl text-error">OOPS Loan Not Found</h1>
-      <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300">
-          <FaArrowLeft /> Browse  All Loans
-        </Link>
-    </div>;
-  }
-
   const isDisabled = role === "admin" || role === "manager";
 
   return (
-    <div className="min-h-screen bg-base-200 py-10 px-4 md:px-10">
-            <PageTitle title={loan.title} />
+    <div className="min-h-screen bg-base-200 py-10">
+      <PageTitle title={loan?.title || "Loan Details"} />
 
-      <div className="max-w-6xl mx-auto">
-        
-        <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300">
+      <div className="max-w-7xl mx-auto px-4">
+        <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300 transition-all">
           <FaArrowLeft /> Back to All Loans
         </Link>
 
-        <div className="card lg:card-side bg-base-100 shadow-2xl overflow-hidden border border-base-300">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
-          <figure className="lg:w-1/2 relative h-96 lg:h-auto">
-            <img
-              src={loan.loanImage || loan.image}
-              alt={loan.title}
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute top-4 left-4">
-               <span className="badge badge-primary badge-lg p-4 font-bold shadow-lg">
-                  {loan.category}
-               </span>
-            </div>
-          </figure>
-
-          <div className="card-body lg:w-1/2 p-8 lg:p-12">
-            <h1 className="text-4xl font-extrabold text-base-content mb-4">
-              {loan.title}
-            </h1>
+          {/* Main Content Area (Requirement 4.2.1 & 4.2.2) */}
+          <div className="lg:col-span-2 space-y-8">
             
-            <p className="text-base-content/70 text-lg leading-relaxed mb-8">
-              {loan.description}
-            </p>
-
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
-              <div className="p-4 bg-primary/10 rounded-2xl border border-primary/20">
-                <div className="flex items-center gap-3 mb-1">
-                   <div className="p-2 bg-primary text-white rounded-lg">
-                      <FaDollarSign />
-                   </div>
-                   <span className="text-sm font-semibold text-base-content/60">Max Loan Limit</span>
+            {/* Image Section */}
+            <div className="card bg-base-100 shadow-xl overflow-hidden rounded-3xl border border-base-300">
+              <figure className="h-[400px] relative">
+                <img src={loan.loanImage || loan.image} alt={loan.title} className="w-full h-full object-cover" />
+                <div className="absolute top-6 left-6">
+                  <span className="badge badge-primary badge-lg p-5 font-bold uppercase tracking-wider shadow-2xl">
+                    {loan.category}
+                  </span>
                 </div>
-                <p className="text-2xl font-bold text-primary">
-                   ৳{loan.maxLoanLimit}
-                </p>
-              </div>
-
-              <div className="p-4 bg-secondary/10 rounded-2xl border border-secondary/20">
-                <div className="flex items-center gap-3 mb-1">
-                   <div className="p-2 bg-secondary text-white rounded-lg">
-                      <FaPercent />
-                   </div>
-                   <span className="text-sm font-semibold text-base-content/60">Interest Rate</span>
+              </figure>
+              
+              <div className="p-8 lg:p-10">
+                <h1 className="text-4xl font-black text-base-content mb-6 leading-tight">{loan.title}</h1>
+                
+                {/* Description Section (Requirement 4.2.1) */}
+                <div className="space-y-4">
+                  <h3 className="text-2xl font-bold flex items-center gap-2 text-primary">
+                    <FaInfoCircle /> Overview
+                  </h3>
+                  <p className="text-base-content/70 text-lg leading-relaxed text-justify">
+                    {loan.description}
+                  </p>
                 </div>
-                <p className="text-2xl font-bold text-secondary">
-                   {loan.interestRate}% <span className="text-sm font-normal text-base-content/60">/Year</span>
-                </p>
               </div>
             </div>
 
-            <div className="mb-8">
-              <h3 className="text-xl font-bold mb-4 flex items-center gap-2">
-                 <FaMoneyCheckAlt className="text-accent" /> Available EMI Plans
+            {/* Specifications Section (Requirement 4.2.2) */}
+            <div className="card bg-base-100 shadow-xl p-8 lg:p-10 rounded-3xl border border-base-300">
+              <h3 className="text-2xl font-bold mb-8 flex items-center gap-2 text-secondary">
+                <FaThList /> Key Specifications
               </h3>
-              <div className="flex flex-wrap gap-3">
-                {loan.emiPlans && loan.emiPlans.length > 0 ? (
-                  loan.emiPlans.map((plan, idx) => (
-                    <span key={idx} className="badge badge-outline badge-lg p-4 font-medium hover:bg-base-200 cursor-pointer transition-colors">
-                      {plan}
-                    </span>
-                  ))
-                ) : (
-                  <span className="text-base-content/60">No specific EMI plans listed.</span>
-                )}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+                <div className="flex items-start gap-4 p-5 bg-base-200 rounded-2xl">
+                  <div className="p-3 bg-primary text-white rounded-xl shadow-lg"><FaDollarSign className="text-xl"/></div>
+                  <div>
+                    <p className="text-sm font-bold text-base-content/50 uppercase">Max Amount</p>
+                    <p className="text-2xl font-black text-base-content">৳{loan.maxLoanLimit}</p>
+                  </div>
+                </div>
+                <div className="flex items-start gap-4 p-5 bg-base-200 rounded-2xl">
+                  <div className="p-3 bg-secondary text-white rounded-xl shadow-lg"><FaPercent className="text-xl"/></div>
+                  <div>
+                    <p className="text-sm font-bold text-base-content/50 uppercase">Interest Rate</p>
+                    <p className="text-2xl font-black text-base-content">{loan.interestRate}% <span className="text-sm font-normal">/Year</span></p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-10 grid grid-cols-1 md:grid-cols-2 gap-10">
+                <div>
+                  <h4 className="font-bold text-lg mb-4 flex items-center gap-2"><FaMoneyCheckAlt className="text-accent" /> EMI Plans</h4>
+                  <div className="flex flex-wrap gap-2">
+                    {loan.emiPlans?.map((plan, i) => (
+                      <div key={i} className="badge badge-outline badge-lg p-4 font-semibold">{plan}</div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <h4 className="font-bold text-lg mb-4 flex items-center gap-2 text-success"><FaCheckCircle /> Documents</h4>
+                  <ul className="space-y-2">
+                    {loan.requirements?.map((req, i) => (
+                      <li key={i} className="flex items-center gap-2 text-base-content/80 text-sm font-medium italic">
+                         — {req}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
               </div>
             </div>
+          </div>
 
-            <div className="mb-8">
-                <h3 className="text-xl font-bold mb-3">Required Documents</h3>
-                <ul className="space-y-2">
-                    {loan.requirements && loan.requirements.length > 0 ? (
-                        loan.requirements.map((req, idx) => (
-                            <li key={idx} className="flex items-center gap-2 text-base-content/80">
-                                <FaCheckCircle className="text-success w-5 h-5" /> {req}
-                            </li>
-                        ))
-                    ) : (
-                         <li className="text-base-content/60">Contact for requirements.</li>
-                    )}
-                </ul>
-            </div>
-
-            <div className="card-actions justify-end mt-auto pt-6 border-t border-base-200">
+          {/* Sidebar Area (Apply & Related Loans) */}
+          <div className="space-y-8">
+            {/* Apply Card */}
+            <div className="card bg-base-100 shadow-2xl p-8 rounded-3xl border-t-8 border-primary sticky top-24">
+              <h3 className="text-2xl font-bold mb-2">Need this loan?</h3>
+              <p className="text-sm text-base-content/60 mb-8">Quick approval within 24 hours.</p>
+              
               {isDisabled ? (
-                <div className="tooltip" data-tip={`${role === 'admin' ? 'Admins' : 'Managers'} cannot apply for loans`}>
-                  <button className="btn btn-disabled btn-lg w-full rounded-xl">
-                    Apply Now (Restricted)
-                  </button>
+                <div className="tooltip w-full" data-tip="Admin/Managers cannot apply">
+                  <button className="btn btn-disabled btn-lg w-full rounded-2xl">Application Restricted</button>
                 </div>
               ) : (
-                <button 
-                  onClick={handleApply}
-                  className="btn btn-primary btn-lg w-full rounded-xl shadow-xl hover:shadow-2xl hover:scale-[1.02] transition-all"
-                >
-                  Apply Now
+                <button onClick={handleApply} className="btn btn-primary btn-lg w-full rounded-2xl shadow-xl shadow-primary/20 hover:scale-[1.03] transition-all font-black text-white">
+                  APPLY NOW
                 </button>
               )}
+              <div className="mt-6 p-4 bg-info/10 rounded-xl border border-info/20 text-xs italic">
+                * Terms and conditions apply based on your bank statement and credit history.
+              </div>
             </div>
 
+            {/* Related Loans Section (Requirement 4.4) */}
+            {relatedLoans.length > 0 && (
+              <div className="space-y-4">
+                <h3 className="text-xl font-bold px-2">Related {loan.category}s</h3>
+                <div className="space-y-4">
+                  {relatedLoans.map(rel => (
+                    <Link key={rel._id} to={`/loan-details/${rel._id}`} className="card card-side bg-base-100 shadow-md hover:shadow-xl transition-all border border-base-300 h-24 overflow-hidden group">
+                      <figure className="w-24 shrink-0">
+                        <img src={rel.loanImage || rel.image} className="w-full h-full object-cover group-hover:scale-110 transition-transform" alt="" />
+                      </figure>
+                      <div className="card-body p-3 justify-center">
+                        <h4 className="font-bold text-sm line-clamp-1">{rel.title}</h4>
+                        <p className="text-primary font-bold text-xs">৳{rel.maxLoanLimit}</p>
+                      </div>
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
+          
         </div>
       </div>
     </div>
