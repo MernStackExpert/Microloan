@@ -31,12 +31,13 @@ import Payment from "../Pages/Dashbord/Payment/Payment";
 import PaymentHistory from "../Pages/Dashbord/UserHome/PaymentHistory/PaymentHistory";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import AdminManagerRoute from "./AdminManagerRoute";
+import ServicesPage from "../Pages/Services/ServicesPage";
 
 export const Router = createBrowserRouter([
   {
     path: "/",
     element: <MainLayout />,
-    errorElement: <ErrorPage/>,
+    errorElement: <ErrorPage />,
     children: [
       {
         path: "/",
@@ -49,6 +50,10 @@ export const Router = createBrowserRouter([
       {
         path: "/about",
         element: <About />,
+      },
+      {
+        path: "/services",
+        element: <ServicesPage />,
       },
       {
         path: "/login",
@@ -64,11 +69,7 @@ export const Router = createBrowserRouter([
       },
       {
         path: "/loan-details/:id",
-        element: (
-          
-            <LoanDetails />
-          
-        ),
+        element: <LoanDetails />,
       },
       {
         path: "/loan-application",

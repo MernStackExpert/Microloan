@@ -37,6 +37,7 @@ const AppNavbar = () => {
       <li><NavLink to="/all-loans" className={navLinkClasses} onClick={() => setOpen(false)}>All Loans</NavLink></li>
       <li><NavLink to="/about" className={navLinkClasses} onClick={() => setOpen(false)}>About</NavLink></li>
       <li><NavLink to="/contact" className={navLinkClasses} onClick={() => setOpen(false)}>Contact</NavLink></li>
+      <li><NavLink to="/services" className={navLinkClasses} onClick={() => setOpen(false)}>Services</NavLink></li>
     </>
   );
 

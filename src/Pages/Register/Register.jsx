@@ -8,7 +8,6 @@ import {
   MdLockOutline,
   MdPersonOutline,
   MdImage,
-  MdWorkOutline,
   MdCloudUpload,
   MdLink,
   MdVisibility,
@@ -39,7 +38,7 @@ const Register = () => {
   const image_hosting_api = `https://api.imgbb.com/1/upload?key=${image_hosting_key}`;
 
   const onSubmit = async (data) => {
-    const { name, email, role, password, photoURL, imageFile } = data;
+    const { name, email, password, photoURL, imageFile } = data;
     const toastId = toast.loading("Creating account...");
 
     try {
@@ -60,14 +59,18 @@ const Register = () => {
       const currentUser = {
         displayName: name,
         email,
-        role,
+        role: "borrower", 
         photoURL: finalPhoto,
+        status: "active",
+        createdAt: new Date()
       };
+      
       await axiosSecure.post("/users", currentUser);
 
       toast.success("Registration Successful!", { id: toastId });
       navigate("/");
     } catch (error) {
+      console.error(error);
       toast.error("Registration failed. Please try again.", { id: toastId });
     }
   };
@@ -81,6 +84,8 @@ const Register = () => {
           email: user.email,
           photoURL: user.photoURL,
           role: "borrower",
+          status: "active",
+          createdAt: new Date()
         };
         axiosSecure.post("/users", currentUser)
           .then(() => {
@@ -125,7 +130,6 @@ const Register = () => {
 
             <form onSubmit={handleSubmit(onSubmit)} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                {/* Name Field */}
                 <div className="space-y-1">
                   <div className="relative">
                     <MdPersonOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
@@ -139,7 +143,6 @@ const Register = () => {
                   {errors.name && <p className="text-error text-xs font-medium ml-2">{errors.name.message}</p>}
                 </div>
 
-                {/* Email Field */}
                 <div className="space-y-1">
                   <div className="relative">
                     <MdOutlineEmail className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50" />
@@ -157,7 +160,6 @@ const Register = () => {
                 </div>
               </div>
 
-              {/* Photo Section */}
               <div className="space-y-3">
                 <label className="text-sm font-semibold text-base-content/80 ml-1">Profile Photo Source</label>
                 <div className="flex gap-2">
@@ -181,19 +183,6 @@ const Register = () => {
                 )}
               </div>
 
-              {/* Role Field */}
-              <div className="space-y-1">
-                <div className="relative">
-                  <MdWorkOutline className="absolute left-4 top-1/2 -translate-y-1/2 text-xl text-base-content/50 z-10" />
-                  <select className={`select select-bordered w-full pl-12 rounded-xl h-14 bg-base-200/50 ${errors.role ? "select-error" : ""}`} {...register("role", { required: "Please select a role" })}>
-                    <option value="borrower">Borrower (User)</option>
-                    <option value="manager">Manager (Loan Officer)</option>
-                  </select>
-                </div>
-                {errors.role && <p className="text-error text-xs font-medium ml-2">{errors.role.message}</p>}
-              </div>
-
-              {/* Password Fields */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="space-y-1">
                   <div className="relative">
