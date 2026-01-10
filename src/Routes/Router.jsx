@@ -124,9 +124,9 @@ export const Router = createBrowserRouter([
       {
         path: "add-loan",
         element: (
-          <ManagerRoute>
+          <AdminManagerRoute>
             <AddLoan />
-          </ManagerRoute>
+          </AdminManagerRoute>
         ),
       },
       {

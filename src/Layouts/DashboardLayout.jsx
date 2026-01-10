@@ -125,6 +125,11 @@ const DashboardLayout = () => {
                 </NavLink>
               </li>
               <li>
+                <NavLink to="/dashboard/add-loan">
+                  <FaHandHoldingUsd /> Add Loan
+                </NavLink>
+              </li>
+              <li>
                 <NavLink to="/dashboard/loan-applications">
                   <FaFileInvoiceDollar /> Loan Applications
                 </NavLink>

@@ -68,9 +68,9 @@ const LoanDetails = () => {
       <PageTitle title={loan?.title || "Loan Details"} />
 
       <div className="max-w-7xl mx-auto px-4">
-        <Link to="/all-loans" className="btn btn-ghost mb-6 gap-2 hover:bg-base-300 transition-all">
+        <button onClick={() => navigate(-1)} className="btn btn-ghost mb-6 gap-2 hover:bg-base-300 transition-all">
           <FaArrowLeft /> Back to All Loans
-        </Link>
+        </button>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           
